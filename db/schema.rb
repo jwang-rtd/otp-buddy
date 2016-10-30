@@ -11,16 +11,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161030182434) do
+ActiveRecord::Schema.define(version: 20161030205914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "itineraries", force: :cascade do |t|
+    t.integer  "request_id"
+    t.integer  "duration"
+    t.integer  "walk_time"
+    t.integer  "transit_time"
+    t.integer  "wait_time"
+    t.float    "walk_distance"
+    t.integer  "transfers"
+    t.text     "json_legs"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "places", force: :cascade do |t|
     t.string   "lat",        null: false
     t.string   "lng",        null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.text     "otp_request"
+    t.text     "otp_response_body"
+    t.string   "otp_response_code"
+    t.string   "otp_response_message"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "trip_id"
+    t.string   "trip_type"
   end
 
   create_table "settings", force: :cascade do |t|

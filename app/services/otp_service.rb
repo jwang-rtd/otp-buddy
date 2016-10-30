@@ -64,25 +64,14 @@ class OTPService
     url = base_url + url_options
 
     Rails.logger.info URI.parse(url)
-    t = Time.now
+
     begin
       resp = Net::HTTP.get_response(URI.parse(url))
-      Rails.logger.info(resp.ai)
     rescue Exception=>e
-      return false, {'id'=>500, 'msg'=>e.to_s}
+      return url, {'id'=>500, 'msg'=>e.to_s}
     end
 
-    if resp.code != "200"
-      return false, {'id'=>resp.code.to_i, 'msg'=>resp.message}
-    end
-
-    data = resp.body
-    result = JSON.parse(data)
-    if result.has_key? 'error' and not result['error'].nil?
-      return false, result['error']
-    else
-      return true, result
-    end
+    return url, resp
 
   end
 
