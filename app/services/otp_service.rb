@@ -3,8 +3,6 @@ require 'net/http'
 
 class OTPService
 
-  METERS_TO_MILES = 0.000621371192
-
   def plan(from,
       to, trip_datetime, arriveBy=true, mode="TRANSIT,WALK", wheelchair="false", walk_speed=3.0,
       max_walk_distance=2, max_bicycle_distance=5, optimize='QUICK', num_itineraries=3,

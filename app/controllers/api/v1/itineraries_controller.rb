@@ -36,13 +36,9 @@ module Api
         #Build the Trip Places
         origin = Place.new
         destination = Place.new
-
         first_part = (trip_parts.select { |part| part[:segment_index] == 0}).first
         origin.from_place_details first_part[:start_location]
         destination.from_place_details first_part[:end_location]
-        origin.save
-        destination.save
-
         trip.origin = origin
         trip.destination = destination
 
@@ -50,13 +46,9 @@ module Api
         #trip.desired_modes_raw = modes
         #trip.desired_modes = Mode.where(code: modes)
 
-        final_itineraries = []
-
-        # TODO: Make this go away.  Move these fields up to the top level of the call
         trip_part = trip_parts.first
         trip.arrive_by = !(trip_part[:departure_type].downcase == 'depart')
         trip.scheduled_time = trip_part[:trip_time].to_datetime
-
 
         #If not feed ID is sent, assume the first feed id.  It's almost always 1
         first_feed_id = OTPService.new.get_first_feed_id
@@ -88,8 +80,6 @@ module Api
           trip.preferred_routes = preferred_routes_string.chop
         end
 
-
-
         trip.save
 
         request = Request.new
@@ -97,88 +87,17 @@ module Api
         request.trip = trip
         request.save
 
-        render json: trip.plan
-        return
+        trip.plan
 
-        ##### DEREK MADE IT THIS FAR
+        #TODO: Build the callnride functionality
+        #origin_in_callnride, origin_callnride = trip.origin.within_callnride?
+        #destination_in_callnride, destination_callnride = trip.destination.within_callnride?
+        origin_in_callnride = false
+        destination_in_callnride = false
+        origin_callnride = nil
+        destination_callnride = nil
 
-
-          #Build the itineraries
-        #Append data for API
-        my_itins.each do |itinerary|
-          i_hash = itinerary.as_json(except: 'legs')
-          mode = itinerary.mode
-          i_hash[:mode] = {name: TranslationEngine.translate_text(mode.name), code: mode.code}
-
-          #Open up the legs returned by OTP and augment the information
-          unless itinerary.legs.nil?
-            yaml_legs = YAML.load(itinerary.legs)
-
-            yaml_legs.each do |leg|
-              #1 Add Service Names to Legs if a service exists in the DB that matches the agencyId
-              unless leg['agencyId'].nil?
-                service = Service.where(external_id: leg['agencyId']).first
-                unless service.nil?
-                  leg['serviceName'] = service.name
-                else
-                  leg['serviceName'] = leg['agencyName'] || leg['agencyId']
-                end
-              end
-
-              #2 Check to see if this route_type is classified as a special route_type
-              begin
-                specials = Oneclick::Application.config.gtfs_special_route_types
-              rescue Exception=>e
-                specials = []
-              end
-              if leg['routeType'].nil?
-                leg['specialService'] = false
-              else
-                leg['specialService'] = leg['routeType'].in? specials
-              end
-
-              #3 Check to see if real-time is available for node stops
-              unless leg['intermediateStops'].blank?
-                trip_time = tp.get_trip_time leg['tripId']
-                unless trip_time.blank?
-                  stop_times = trip_time['stopTimes']
-                  leg['intermediateStops'].each do |stop|
-                    stop_time = stop_times.detect{|hash| hash['stopId'] == stop['stopId']}
-                    stop['realtimeArrival'] = stop_time['realtimeArrival']
-                    stop['realtimeDeparture'] = stop_time['realtimeDeparture']
-                    stop['arrivalDelay'] = stop_time['arrivalDelay']
-                    stop['departureDelay'] = stop_time['departureDelay']
-                    stop['realtime'] = stop_time['realtime']
-
-                  end
-                end
-              end
-
-              #4 If a location is a ParkNRide Denote it
-              if leg['mode'] == 'CAR' and itinerary.returned_mode_code == Mode.park_transit.code
-                leg['to']['parkAndRide'] = true
-              end
-
-            end
-            itinerary.legs = yaml_legs.to_yaml
-            itinerary.save
-          end
-
-          if itinerary.legs
-            i_hash[:json_legs] = (YAML.load(itinerary.legs)).as_json
-          else
-            i_hash[:json_legs] = nil
-          end
-
-          final_itineraries.append(i_hash)
-
-        end
-
-        Rails.logger.info('Sending ' + final_itineraries.count.to_s + ' in the response.')
-        origin_in_callnride, origin_callnride = trip.origin.within_callnride?
-        destination_in_callnride, destination_callnride = trip.destination.within_callnride?
-
-        render json: {trip_id: trip.id, origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, trip_token: trip.token, itineraries: final_itineraries}
+        render status: 200, json: {trip_id: trip.id, origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, trip_token: trip.token, itineraries: trip.itineraries.as_json}
 
       end #Plan
 
