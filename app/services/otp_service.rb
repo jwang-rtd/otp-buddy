@@ -14,11 +14,12 @@ class OTPService
     #Parameters
     time = trip_datetime.strftime("%-I:%M%p")
     date = trip_datetime.strftime("%Y-%m-%d")
+
     base_url = Setting.open_trip_planner + '/plan?'
     url_options = "&time=" + time
     url_options += "&mode=" + mode + "&date=" + date
     url_options += "&toPlace=" + to[0].to_s + ',' + to[1].to_s + "&fromPlace=" + from[0].to_s + ',' + from[1].to_s
-    url_options += "&wheelchair=" + wheelchair
+    url_options += "&wheelchair=" + wheelchair.to_s
     url_options += "&arriveBy=" + arriveBy.to_s
     url_options += "&walkSpeed=" + (0.44704*walk_speed).to_s
     url_options += "&showIntermediateStops=" + Setting.show_intermediate_stops.to_s
@@ -107,6 +108,20 @@ class OTPService
     url = Setting.open_trip_planner + path
     resp = Net::HTTP.get_response(URI.parse(url))
     return JSON.parse(resp.body)
+  end
+
+  def get_otp_mode trip_type
+    hash = {'mode_transit': 'TRANSIT,WALK',
+    'mode_bicycle_transit': 'TRANSIT,BICYCLE',
+    'mode_park_transit':'CAR_PARK,WALK,TRANSIT',
+    'mode_car_transit':'CAR,WALK,TRANSIT',
+    'mode_bike_park_transit':'BICYCLE_PARK,WALK,TRANSIT',
+    'mode_rail':'TRAINISH,WALK',
+    'mode_bus':'BUSISH,WALK',
+    'mode_walk':'WALK',
+    'mode_car':'CAR',
+    'mode_bicycle':'MODE_BICYCLE'}
+    hash[trip_type.to_sym]
   end
 
 end

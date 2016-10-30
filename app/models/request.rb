@@ -5,7 +5,13 @@ class Request < ActiveRecord::Base
 
   def plan
     otp_service = OTPService.new
-    otp_request, otp_response = otp_service.plan([self.trip.origin.lat, self.trip.origin.lng],[self.trip.destination.lat, self.trip.destination.lng], Time.now + 2.hours)
+    otp_mode = otp_service.get_otp_mode(self.trip_type)
+    otp_request, otp_response = otp_service.plan([self.trip.origin.lat, self.trip.origin.lng],
+                                                 [self.trip.destination.lat, self.trip.destination.lng],
+                                                 self.trip.scheduled_time, self.trip.arrive_by, otp_mode, wheelchair=false,
+                                                 self.trip.walk_mph, self.trip.max_walk_miles, self.trip.max_bike_miles, self.trip.optimize,
+                                                 self.trip.num_itineraries, self.trip.min_transfer_seconds, self.trip.max_transfer_seconds,
+                                                 self.trip.banned_routes,self.trip.preferred_routes)
     self.otp_request = otp_request
     self.otp_response_code = otp_response.code
     self.otp_response_message = otp_response.message
@@ -65,7 +71,7 @@ class Request < ActiveRecord::Base
       #end
 
       #3 If a location is a ParkNRide Denote it
-      if leg['mode'] == 'CAR' and itinerary.returned_mode_code == Mode.park_transit.code
+      if leg['mode'] == 'CAR' and self.trip_type == 'mode_park_transit'
         leg['to']['parkAndRide'] = true
       end
 

@@ -42,10 +42,6 @@ module Api
         trip.origin = origin
         trip.destination = destination
 
-        #Build a request for each of these modes
-        #trip.desired_modes_raw = modes
-        #trip.desired_modes = Mode.where(code: modes)
-
         trip_part = trip_parts.first
         trip.arrive_by = !(trip_part[:departure_type].downcase == 'depart')
         trip.scheduled_time = trip_part[:trip_time].to_datetime
@@ -82,10 +78,13 @@ module Api
 
         trip.save
 
-        request = Request.new
-        request.trip_type = 'mode_transit'
-        request.trip = trip
-        request.save
+        #Create a request for each Mode
+        modes.each do |mode|
+          request = Request.new
+          request.trip_type = mode
+          request.trip = trip
+          request.save
+        end
 
         trip.plan
 
