@@ -7,7 +7,8 @@ namespace :settings do
         {key: 'show_intermediate_stops', value: "true"},
         {key: 'show_stop_times', value: "true"},
         {key: 'otp_walk_reluctance', value: "20"},
-        {key: 'otp_transfer_penalty', value: "1800"}
+        {key: 'otp_transfer_penalty', value: "1800"},
+        {key: 'api_activated', value: true}
     ]
 
     settings.each do |setting|
