@@ -9,6 +9,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :places do
+        collection do
+          get 'boundary'
+        end
+      end
+
     end
   end
   # The priority is based upon order of creation: first created -> highest priority.

@@ -36,6 +36,10 @@ gem 'awesome_print'
 
 gem 'responders', '~> 2.0'
 
+gem 'rgeo'
+gem 'rgeo-geojson'
+
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

@@ -114,6 +114,9 @@ GEM
       json (~> 1.4)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
+    rgeo (0.5.3)
+    rgeo-geojson (0.4.3)
+      rgeo (~> 0.5)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -162,6 +165,8 @@ DEPENDENCIES
   pg (~> 0.15)
   rails (= 4.2.6)
   responders (~> 2.0)
+  rgeo
+  rgeo-geojson
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring
