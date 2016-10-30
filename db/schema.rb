@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161030172900) do
+ActiveRecord::Schema.define(version: 20161030182434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,9 @@ ActiveRecord::Schema.define(version: 20161030172900) do
     t.integer  "min_transfer_seconds"
     t.integer  "max_transfer_seconds"
     t.string   "source_tag"
+    t.datetime "scheduled_time"
+    t.string   "banned_routes"
+    t.string   "preferred_routes"
   end
 
 end

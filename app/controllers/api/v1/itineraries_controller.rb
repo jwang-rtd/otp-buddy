@@ -33,6 +33,7 @@ module Api
         trip.min_transfer_seconds = min_transfer_time.nil? ? nil : min_transfer_time.to_i
         trip.max_transfer_seconds = max_transfer_time.nil? ? nil : max_transfer_time.to_i
         trip.source_tag = source_tag
+        trip.arrive_by =
 
         #Build the Trip Places
         origin = Place.new
@@ -46,75 +47,55 @@ module Api
 
         trip.origin = origin
         trip.destination = destination
-        trip.save
 
         #Build a request for each of these modes
-        trip.desired_modes_raw = modes
-        trip.desired_modes = Mode.where(code: modes)
+        #trip.desired_modes_raw = modes
+        #trip.desired_modes = Mode.where(code: modes)
 
         final_itineraries = []
 
-        #Build the trip_parts (i.e., segments)
-        trip_parts.each do |trip_part|
-          # Create the outbound trip part
-          tp = TripPart.new
-          tp.trip = trip
+        # TODO: Make this go away.  Move these fields up to the top level of the call
+        trip_part = trip_parts.first
+        trip.arrive_by = !(trip_part[:departure_type].downcase == 'depart')
+        trip.scheduled_time = trip_part[:trip_time].to_datetime
 
-          tp.sequence = trip_part[:segment_index]
-          tp.is_depart = (trip_part[:departure_type].downcase == 'depart')
 
-          tp.scheduled_time = trip_part[:trip_time].to_datetime
-          tp.scheduled_date = trip_part[:trip_time].to_date
+        #If not feed ID is sent, assume the first feed id.  It's almost always 1
+        first_feed_id = OTPService.new.get_first_feed_id
 
-          #Assign trip_places
-          if tp.sequence == 0
-            tp.from_trip_place = from_trip_place
-            tp.to_trip_place = to_trip_place
-          else
-            tp.from_trip_place = to_trip_place
-            tp.to_trip_place = from_trip_place
-          end
-
-          #If not feed ID is sent, assume the first feed id.  It's almost always 1
-          first_feed_id = TripPlanner.new.get_first_feed_id
-
-          #Set Banned Routes
-          unless banned_routes.blank?
-            banned_routes_string = ""
-            banned_routes.each do |banned_route|
-              if banned_route['id'].blank?
-                banned_routes_string +=  first_feed_id.to_s + '_' + banned_route['short_name'] + ','
-              else
-                banned_routes_string += banned_route['id'].split(':').first + '_' + banned_route['short_name'] + ','
-              end
+        #Set Banned Routes
+        unless banned_routes.blank?
+          banned_routes_string = ""
+          banned_routes.each do |banned_route|
+            if banned_route['id'].blank?
+              banned_routes_string +=  first_feed_id.to_s + '_' + banned_route['short_name'] + ','
+            else
+              banned_routes_string += banned_route['id'].split(':').first + '_' + banned_route['short_name'] + ','
             end
-            tp.banned_routes = banned_routes_string.chop
           end
+          trip.banned_routes = banned_routes_string.chop
+        end
 
-          #Set Preferred Routes
-          unless preferred_routes.blank?
-            preferred_routes_string = ""
-            preferred_routes.each do |preferred_route|
-              if preferred_route['id'].blank?
-                preferred_routes_string += first_feed_id.to_s + '_' + preferred_route['short_name'] + ','
-              else
-                preferred_routes_string += preferred_route['id'].split(':').first + '_' + preferred_route['short_name'] + ','
-              end
-
+        #Set Preferred Routes
+        unless preferred_routes.blank?
+          preferred_routes_string = ""
+          preferred_routes.each do |preferred_route|
+            if preferred_route['id'].blank?
+              preferred_routes_string += first_feed_id.to_s + '_' + preferred_route['short_name'] + ','
+            else
+              preferred_routes_string += preferred_route['id'].split(':').first + '_' + preferred_route['short_name'] + ','
             end
-            tp.preferred_routes = preferred_routes_string.chop
-          end
 
-          #Save Trip Part
-          raise 'TripPart not valid' unless tp.valid?
-          trip.trip_parts << tp
-
-          #Seems redundant
-          if tp.sequence == 0
-            trip.scheduled_date = tp.scheduled_date
-            trip.scheduled_time = tp.scheduled_time
-            trip.save
           end
+          trip.preferred_routes = preferred_routes_string.chop
+        end
+
+        trip.save
+        render json: trip.plan
+        return
+
+        ##### DEREK MADE IT THIS FAR
+
 
           #Build the itineraries
           tp.create_itineraries
@@ -215,7 +196,6 @@ module Api
 
           end
 
-        end
         Rails.logger.info('Sending ' + final_itineraries.count.to_s + ' in the response.')
         origin_in_callnride, origin_callnride = trip.origin.within_callnride?
         destination_in_callnride, destination_callnride = trip.destination.within_callnride?
