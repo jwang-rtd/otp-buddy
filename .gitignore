@@ -14,3 +14,9 @@
 
 # Ignore secrets
 secrets.yml
+
+# Ignore ides
+.ideas
+
+# Ignore Temp Files
+*~
