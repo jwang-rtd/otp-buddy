@@ -33,21 +33,20 @@ module Api
         trip.min_transfer_seconds = min_transfer_time.nil? ? nil : min_transfer_time.to_i
         trip.max_transfer_seconds = max_transfer_time.nil? ? nil : max_transfer_time.to_i
         trip.source_tag = source_tag
-        trip.save
 
         #Build the Trip Places
-        from_trip_place = TripPlace.new
-        to_trip_place = TripPlace.new
-        from_trip_place.trip = trip
-        to_trip_place.trip = trip
-        from_trip_place.sequence = 0
-        to_trip_place.sequence = 1
+        origin = Place.new
+        destination = Place.new
 
         first_part = (trip_parts.select { |part| part[:segment_index] == 0}).first
-        from_trip_place.from_place_details first_part[:start_location]
-        to_trip_place.from_place_details first_part[:end_location]
-        from_trip_place.save
-        to_trip_place.save
+        origin.from_place_details first_part[:start_location]
+        destination.from_place_details first_part[:end_location]
+        origin.save
+        destination.save
+
+        trip.origin = origin
+        trip.destination = destination
+        trip.save
 
         #Build a request for each of these modes
         trip.desired_modes_raw = modes
