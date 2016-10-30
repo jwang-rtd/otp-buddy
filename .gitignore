@@ -16,7 +16,9 @@
 secrets.yml
 
 # Ignore ides
-.ideas
+./ideas
+/.idea/
+.idea/workspace.xml
 
 # Ignore Temp Files
 *~
