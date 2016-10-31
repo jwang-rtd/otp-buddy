@@ -27,10 +27,10 @@ class Landmark < ActiveRecord::Base
         formatted_address: self.address,
         place_id: self.google_place_id,
         geometry: {
-            location: {
-                lat: self.lat,
-                lng: self.lng,
-            }
+          location: {
+              lat: self.lat,
+              lng: self.lng,
+          }
         },
 
         id: self.id,

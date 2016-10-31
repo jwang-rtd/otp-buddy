@@ -14,11 +14,10 @@ module Api
         #Check for exact match on stop code
         #Cut out white space and remove wildcards
         stripped_string = search_string.tr('%', '').strip
-
-        #stop = Poi.stops.where(stop_code: stripped_string).first
-        #if stop
-        #  locations.append(stop.build_place_details_hash)
-        #end
+        stop = Landmark.stops.where(stop_code: stripped_string).first
+        if stop
+          locations.append(stop.build_place_details_hash)
+        end
 
         # Global POIs
         landmarks = Landmark.get_by_query_str(search_string, max_results, true)
