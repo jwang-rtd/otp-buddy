@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
       resources :places do
         collection do
+          get 'search'
           get 'boundary'
         end
       end
