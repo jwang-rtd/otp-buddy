@@ -16,7 +16,9 @@ namespace :settings do
         {key: 'google_radius_meters', value: 40000},
         {key: 'geocoder_components', value: 'country:US'},
         {key: 'geocoder_bounds', value: [[39.496227, -105.338796], [39.998374, -104.688062]] },
-        {key: 'synonyms_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/synonyms.csv"}
+        {key: 'synonyms_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/synonyms.csv"},
+        {key: 'limit_geocoding', value: true},
+        {key: 'geocoding_limit', value: 100}
     ]
 
     settings.each do |setting|

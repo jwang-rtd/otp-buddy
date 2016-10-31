@@ -230,10 +230,94 @@ namespace :landmarks do
     end
   end
 
+  desc "Load new Stops"
+  task :load_new_stops => :environment do
+
+    tp = OTPService.new
+    l = Landmark.where(landmark_type: 'STOP').first
+    if l
+      if l.updated_at > tp.last_built
+        puts  'OpenTripPlanner graph has not been updated since last loading Stops.'
+        puts 'Stops were last updated at: ' + l.updated_at.to_s
+        puts Setting.open_trip_planner + ' graph was last update at ' + tp.last_built.to_s
+        next
+      end
+    end
+
+    Landmark.where(landmark_type: 'STOP').update_all(old: true)
+    failed = false
+
+    og = GeocodingService.new
+    geocoded = 0
+
+    stops = tp.get_stops
+    stops.each do |stop|
+
+      stop_code = stop['id'].split(':').last  #TODO: The GTFS doesn't have stop_codes, using id for now.
+      name = stop['name']
+      lat = stop['lat']
+      lon = stop['lon']
+
+      l = Landmark.create!({
+                          landmark_type: 'STOP',
+                          stop_code: stop_code,
+                          lng: lon,
+                          lat: lat,
+                          name: name,
+                          old: false,
+                      })
+
+      if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
+        #Reverse Geocode the Lat Lng to fill in the City
+        sleep(0.25)
+        reverse_geocoded = og.reverse_geocode(l.lat, l.lng)
+        if reverse_geocoded[0] and reverse_geocoded[1].count > 0 #No errors?
+          l.city = reverse_geocoded[1].first[:city]
+          l.save
+        end
+        geocoded += 1
+        puts "Geocoding " + geocoded.to_s + " of " + stops.count.to_s
+      else
+        puts 'skipping geocoding'
+      end
+
+    end
+
+    #Catch any that didn't geocode due to timeout
+    if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
+      ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
+      ungeocoded.each do |p|
+        #Reverse Geocode the Lat Lng to fill in the City
+        sleep(1)
+        reverse_geocoded = og.reverse_geocode(l.lat, l.lng)
+        if reverse_geocoded[0] and reverse_geocoded[1].count > 0 #No errors?
+          l.city = reverse_geocoded[1].first[:city]
+          l.save
+        end
+        geocoded += 1
+        puts "Geocoding " + geocoded.to_s + " of " + stops.count.to_s
+      end
+    end
+
+    ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
+
+    unless failed
+      Landmark.where(landmark_type: 'STOP').is_old.delete_all
+      Landmark.where(landmark_type: 'STOP').update_all(old: false)
+      puts 'Done: Loaded ' + Landmark.where(landmark_type: 'STOP').count.to_s + ' new Stops'
+      #UserMailer.stops_succeeded_email(Oneclick::Application.config.support_emails.split(','), ungeocoded).deliver!
+    end
+
+    ungeocoded.destroy_all
+
+  end
+
+
   desc "Load Landmarks, Stops, and Synonyms"
   task :load_landmarks_stops_and_synonyms => :environment do
-    Rake::Task['oneclick:load_new_landmarks'].invoke
-    Rake::Task['oneclick:update_synonyms'].invoke
+    Rake::Task['landmarks:load_new_landmarks'].invoke
+    Rake::Task['landmarks:update_synonyms'].invoke
+    Rake::Task['landmarks:load_new_stops'].invoke
   end
 
   desc "Destroy All Landmarks"
