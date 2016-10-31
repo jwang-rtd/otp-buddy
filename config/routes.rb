@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         collection do
           get 'search'
           get 'boundary'
+          get 'synonyms'
         end
       end
 
@@ -40,7 +41,7 @@ Rails.application.routes.draw do
   #       post 'toggle'
   #     end
   #
-  #     collection do
+  #     collection
   #       get 'sold'
   #     end
   #   end

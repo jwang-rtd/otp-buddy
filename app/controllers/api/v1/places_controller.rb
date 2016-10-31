@@ -2,7 +2,6 @@ module Api
   module V1
     class PlacesController < Api::V1::ApiController
 
-
       def search
         #Get the Search String
         search_string = params[:search_string]
@@ -41,6 +40,11 @@ module Api
       def boundary
         gs =  GeographyService.new
         render status: 200, json: gs.global_boundary_as_geojson
+      end
+
+      def synonyms
+        synonyms = Setting.synonyms
+        render status: 200, json: synonyms.as_json
       end
 
     end
