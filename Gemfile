@@ -36,8 +36,17 @@ gem 'awesome_print'
 
 gem 'responders', '~> 2.0'
 
+#Needed for Within_Area call and Boundary
 gem 'rgeo'
 gem 'rgeo-geojson'
+
+#Needed for Geocoder
+gem 'Indirizzo'
+gem 'geocoder'
+gem 'faraday_middleware'
+
+#Needed for application.yml
+gem 'figaro'
 
 
 group :development, :test do
