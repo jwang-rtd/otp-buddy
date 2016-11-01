@@ -154,7 +154,7 @@ namespace :landmarks do
   end
 
   desc "Update Synonyms for Shortcuts"
-  task :update_synonyms => :environment do
+  task :load_synonyms => :environment do
     require 'open-uri'
 
     begin
@@ -228,6 +228,68 @@ namespace :landmarks do
       #  UserMailer.synonyms_succeeded_email(Oneclick::Application.config.support_emails.split(',')).deliver!
       #end
     end
+  end
+
+  desc "Load in blacklisted Google Places"
+  task :load_blacklisted_places => :environment do
+
+    require 'open-uri'
+    OpenURI::Buffer.send :remove_const, 'StringMax'
+    OpenURI::Buffer.const_set 'StringMax', 0
+    failed = false
+
+    blf = Setting.blacklisted_places_file
+    unless blf
+      puts 'No Blacklisted Place File Specified.  Need to specify Oneclick::Application.config.blacklisted_places_file'
+      next #Exit the rake task if not file is specified
+    end
+
+    blacklist_file = open(blf)
+    #Check to see if this file is newer than the last time Pois were updated
+    blacklist = Setting.where(key: "blacklisted_places").first_or_initialize
+
+    #If the file is new, updated_at will blank. If it is not blank check the date.
+    if blacklist.updated_at
+      if blacklist.updated_at > blacklist_file.last_modified
+        puts blf.to_s + ' is an old file.'
+        puts 'The blacklist was last updated at: ' + blacklist.updated_at.to_s
+        puts blf.to_s + ' was last update at ' + blacklist_file.last_modified.to_s
+        next
+      end
+    end
+
+    line = 2
+    google_ids = []
+    CSV.foreach(blacklist_file, {:col_sep => ",", :headers => true}) do |row|
+      begin
+        google_ids << row[0]
+      rescue
+        #Found an error, back out all changes and restore previous POIs
+        error_string = 'Error found on line: ' + line.to_s
+        row_string = row
+        puts error_string
+        puts row
+        puts 'No changes have been saved'
+        failed = true
+
+        #Email alert of failure
+        #unless Oneclick::Application.config.support_emails.nil?
+        #  UserMailer.blacklist_failed_email(Oneclick::Application.config.support_emails.split(','), error_string, row_string).deliver!
+        #end
+        break
+      end
+      line += 1
+    end
+
+    unless failed
+      blacklist.value = google_ids
+      blacklist.save
+      #Alert that the new landmarks file was successfuly updated
+      #unless Oneclick::Application.config.support_emails.nil?
+      #  UserMailer.blacklist_succeeded_email(Oneclick::Application.config.support_emails.split(',')).deliver!
+      #end
+    end
+
   end
 
   desc "Load new Stops"
@@ -316,13 +378,30 @@ namespace :landmarks do
   desc "Load Landmarks, Stops, and Synonyms"
   task :load_landmarks_stops_and_synonyms => :environment do
     Rake::Task['landmarks:load_new_landmarks'].invoke
-    Rake::Task['landmarks:update_synonyms'].invoke
+    Rake::Task['landmarks:load_synonyms'].invoke
     Rake::Task['landmarks:load_new_stops'].invoke
+    Rake::Task['landmarks:load_blacklisted_places'].invoke
   end
 
   desc "Destroy All Landmarks"
   task :destroy => :environment do
     Landmark.delete_all
+  end
+
+  desc "Clear Blacklisted Places"
+  task :destroy_blacklisted_places => :environment do
+    s = Setting.find_by(key: 'blacklisted_places')
+    if s
+      s.delete
+    end
+  end
+
+  desc "Clear Synonyms"
+  task :destroy_synonyms => :environment do
+    s = Setting.find_by(key: 'synonyms')
+    if s
+      s.delete
+    end
   end
 
 end

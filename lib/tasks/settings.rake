@@ -18,7 +18,8 @@ namespace :settings do
         {key: 'geocoder_bounds', value: [[39.496227, -105.338796], [39.998374, -104.688062]] },
         {key: 'synonyms_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/synonyms.csv"},
         {key: 'limit_geocoding', value: true},
-        {key: 'geocoding_limit', value: 100}
+        {key: 'geocoding_limit', value: 100},
+        {key: 'blacklisted_places_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/blacklist_edited.csv" }
     ]
 
     settings.each do |setting|
