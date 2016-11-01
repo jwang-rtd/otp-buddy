@@ -35,7 +35,6 @@ module Api
 
       end
 
-
       def boundary
         gs =  GeographyService.new
         render status: 200, json: gs.global_boundary_as_geojson
@@ -44,6 +43,11 @@ module Api
       def synonyms
         synonyms = Setting.synonyms
         render status: 200, json: synonyms.as_json
+      end
+
+      def blacklist
+        blacklist = Setting.blacklisted_places
+        render status: 200, json: blacklist.as_json
       end
 
     end

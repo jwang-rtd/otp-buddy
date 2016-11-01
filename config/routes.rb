@@ -14,6 +14,7 @@ Rails.application.routes.draw do
           get 'search'
           get 'boundary'
           get 'synonyms'
+          get 'blacklist'
         end
       end
 
