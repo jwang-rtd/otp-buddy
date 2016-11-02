@@ -17,6 +17,7 @@ module Api
         max_transfer_time = params[:max_transfer_time]
         banned_routes = params[:banned_routes]
         preferred_routes = params[:preferred_routes]
+
         source_tag = params[:source_tag]
 
         #Assign Meta Data
@@ -31,7 +32,7 @@ module Api
         trip.min_transfer_seconds = min_transfer_time.nil? ? nil : min_transfer_time.to_i
         trip.max_transfer_seconds = max_transfer_time.nil? ? nil : max_transfer_time.to_i
         trip.source_tag = source_tag
-        trip.arrive_by =
+
 
         #Build the Trip Places
         origin = Place.new
