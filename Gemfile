@@ -36,9 +36,10 @@ gem 'awesome_print'
 
 gem 'responders', '~> 2.0'
 
-#Needed for Within_Area call and Boundary
+#Needed for Within_Area call, Boundary, and CallnRide
 gem 'rgeo'
 gem 'rgeo-geojson'
+gem 'rgeo-shapefile'
 
 #Needed for Geocoder
 gem 'Indirizzo'
@@ -48,6 +49,9 @@ gem 'faraday_middleware'
 #Needed for application.yml
 gem 'figaro'
 
+gem 'haml-rails'
+gem 'simple_form'
+gem 'rubyzip'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -68,4 +68,22 @@ class Place < ActiveRecord::Base
     self.save
 
   end
+
+  def within_callnride?
+
+    begin
+      factory = RGeo::Geographic.simple_mercator_factory
+      point = factory.point(self.lng.to_f, self.lat.to_f)
+      Setting.callnride_boundary.each do |boundary|
+        if boundary[:geometry].contains? point
+          return true, boundary[:name]
+        end
+      end
+      return false, nil
+    rescue
+      return false, nil
+    end
+
+  end
+
 end

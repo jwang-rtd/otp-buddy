@@ -88,13 +88,8 @@ module Api
 
         trip.plan
 
-        #TODO: Build the callnride functionality
-        #origin_in_callnride, origin_callnride = trip.origin.within_callnride?
-        #destination_in_callnride, destination_callnride = trip.destination.within_callnride?
-        origin_in_callnride = false
-        destination_in_callnride = false
-        origin_callnride = nil
-        destination_callnride = nil
+        origin_in_callnride, origin_callnride = trip.origin.within_callnride?
+        destination_in_callnride, destination_callnride = trip.destination.within_callnride?
 
         render status: 200, json: {trip_id: trip.id, origin: trip.origin.build_place_details_hash, destination: trip.destination.build_place_details_hash, origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, trip_token: trip.token, itineraries: trip.itineraries.as_json}
 

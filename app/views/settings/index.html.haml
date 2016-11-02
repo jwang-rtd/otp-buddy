@@ -1,0 +1,18 @@
+This will be made pretty later, for now it's good enough that the CallnRide works.  Later this page will contain all the editable settings.
+
+= simple_form_for @boundary, url: set_callnride_boundary_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
+  .row#poi_upload_div
+    .col-sm-12
+      .panel.panel-default
+        .panel-heading
+          .row
+            .col-sm-12
+              %h3.panel-title
+                .btns.pull-right
+                  = f.submit "ok", class: 'btn action-button', role: 'button'
+                  = "Set CallnRide"
+          .panel-body
+            //= f.error_notification message: print_messages(f)
+            %label
+              = "Upload Zippled CallnRide Shapefile"
+            = f.input "file", required:true, :label => "Upload Shapefile", :as => :file
