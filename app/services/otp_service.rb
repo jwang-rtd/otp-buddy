@@ -62,7 +62,7 @@ class OTPService
 
     url = base_url + url_options
 
-    Rails.logger.info URI.parse(url)
+    Rails.logger.info url
 
     begin
       resp = Net::HTTP.get_response(URI.parse(url))
