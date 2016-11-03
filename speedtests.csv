@@ -1,1 +1,18 @@
-Informal Speed Testing,,,,,Request,"{""source_tag"":""internal"",""trip_purpose"":""general_purpose"",""optimize"":""TIME"",""itinerary_request"":[{""segment_index"":0,""start_location"":{""formatted_address"":""3401 E Colfax Ave, Denver, CO 80206, USA"",""geometry"":{""location"":{""lat"":39.74032700000001,""lng"":-104.94736699999999}}},""end_location"":{""formatted_address"":""1231 S Parker Rd, Denver, CO 80231, USA"",""geometry"":{""location"":{""lat"":39.69393549999999,""lng"":-104.89589339999998}}},""trip_time"":""2016-10-18T21:03:00+00:00"",""departure_type"":""depart""}],""modes"":[""mode_transit""],""max_walk_miles"":0.5,""max_bicycle_miles"":3,""min_transfer_time"":5,""max_transfer_time"":3600}",,,,,Tial 1,Trial 21,4.2,4.72,3.2,3.53,2.6,2.84,3.2,2.55,3.8,3.96,2.8,2.87,3.8,2.58,5.6,2.99,4.4,3.610,4.7,5.3Total,38.3,34.5Average,3.83,3.45
+Informal Speed Testing,,
+,,
+,Request,"{""source_tag"":""internal"",""trip_purpose"":""general_purpose"",""optimize"":""TIME"",""itinerary_request"":[{""segment_index"":0,""start_location"":{""formatted_address"":""3401 E Colfax Ave, Denver, CO 80206, USA"",""geometry"":{""location"":{""lat"":39.74032700000001,""lng"":-104.94736699999999}}},""end_location"":{""formatted_address"":""1231 S Parker Rd, Denver, CO 80231, USA"",""geometry"":{""location"":{""lat"":39.69393549999999,""lng"":-104.89589339999998}}},""trip_time"":""2016-10-18T21:03:00+00:00"",""departure_type"":""depart""}],""modes"":[""mode_transit""],""max_walk_miles"":0.5,""max_bicycle_miles"":3,""min_transfer_time"":5,""max_transfer_time"":3600}"
+,,
+,,
+,Trial 1,Trial 2
+1,4.2,4.7
+2,3.2,3.5
+3,2.6,2.8
+4,3.2,2.5
+5,3.8,3.9
+6,2.8,2.8
+7,3.8,2.5
+8,5.6,2.9
+9,4.4,3.6
+10,4.7,5.3
+Total,38.3,34.5
+Average,3.83,3.45
