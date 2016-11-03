@@ -1,0 +1,17 @@
+='Stops Upload Succeeded'
+
+
+%div.row
+  =Poi.stops.count.to_s + " stops were loaded."
+
+%div.row
+  The following stops where not geocoded.
+  -@ungeocoded.each do |p|
+    %div.row
+      =p.name.to_s + ": " + p.stop_code.to_s
+
+%div.row
+  ='This file is located at: '
+  %a{href: Setting.open_trip_planner + '/index/stops'}
+    =Setting.open_trip_planner
+

@@ -9,7 +9,7 @@ namespace :landmarks do
     begin
       lm = Setting.landmarks_file
     rescue
-      puts 'No Landmarks File Specified.  Need to specify Oneclick::Application.config.landmarks_file'
+      puts 'No Landmarks File Specified.  Need to specify Setting.landmarks_file'
       next #Exit the rake task if not file is specified
     end
 
@@ -73,9 +73,9 @@ namespace :landmarks do
         failed = true
 
         #Email alert of failure
-        #unless Oneclick::Application.config.support_emails.nil?
-        #  UserMailer.landmarks_failed_email(Oneclick::Application.config.support_emails.split(','), error_string, row_string).deliver!
-        #end
+        unless Setting.support_emails.nil?
+          UserMailer.landmarks_failed_email(Setting.support_emails.split(','), error_string, row_string).deliver!
+        end
         break
       end
       line += 1
@@ -89,9 +89,9 @@ namespace :landmarks do
       non_geocoded_pois = Landmark.where(landmark_type: 'POI', google_place_id: nil)
 
       #Alert that the new landmarks file was successfuly updated
-      #unless Oneclick::Application.config.support_emails.nil?
-      #  UserMailer.landmarks_succeeded_email(Oneclick::Application.config.support_emails.split(','), non_geocoded_pois).deliver!
-      #end
+      unless Setting.support_emails.nil?
+        UserMailer.landmarks_succeeded_email(Setting.support_emails.split(','), non_geocoded_pois).deliver!
+      end
     end
 
   end
@@ -202,9 +202,9 @@ namespace :landmarks do
           puts 'No Changes have been made to synonyms.'
           failed = true
           #Email alert of failure
-          #unless Oneclick::Application.config.support_emails.nil?
-          #  UserMailer.synonyms_failed_email(Oneclick::Application.config.support_emails.split(','), error_string, row_string).deliver!
-          #end
+          unless Setting.support_emails.nil?
+            UserMailer.synonyms_failed_email(Setting.support_emails.split(','), error_string, row_string).deliver!
+          end
           break
         end
       end
@@ -217,16 +217,16 @@ namespace :landmarks do
         synonyms.value = new_synonyms
         synonyms.save
       rescue
-        #unless Oneclick::Application.config.support_emails.nil?
-        #  UserMailer.synonyms_failed_email(Oneclick::Application.config.support_emails.split(','), "Unable to save new synonyms.", "").deliver!
-        #end
+        unless Setting.support_emails.nil?
+          UserMailer.synonyms_failed_email(Setting.support_emails.split(','), "Unable to save new synonyms.", "").deliver!
+        end
         break
       end
       puts 'Done: Loaded ' + (line - 2).to_s + ' new Synonyms'
       #Alert that the new synonyms file was successfuly updated
-      #unless Oneclick::Application.config.support_emails.nil?
-      #  UserMailer.synonyms_succeeded_email(Oneclick::Application.config.support_emails.split(',')).deliver!
-      #end
+      unless Setting.support_emails.nil?
+        UserMailer.synonyms_succeeded_email(Setting.support_emails.split(',')).deliver!
+      end
     end
   end
 
@@ -240,7 +240,7 @@ namespace :landmarks do
 
     blf = Setting.blacklisted_places_file
     unless blf
-      puts 'No Blacklisted Place File Specified.  Need to specify Oneclick::Application.config.blacklisted_places_file'
+      puts 'No Blacklisted Place File Specified.  Need to specify Setting.blacklisted_places_file'
       next #Exit the rake task if not file is specified
     end
 
@@ -273,9 +273,9 @@ namespace :landmarks do
         failed = true
 
         #Email alert of failure
-        #unless Oneclick::Application.config.support_emails.nil?
-        #  UserMailer.blacklist_failed_email(Oneclick::Application.config.support_emails.split(','), error_string, row_string).deliver!
-        #end
+        unless Setting.support_emails.nil?
+          UserMailer.blacklist_failed_email(Setting.support_emails.split(','), error_string, row_string).deliver!
+        end
         break
       end
       line += 1
@@ -285,9 +285,9 @@ namespace :landmarks do
       blacklist.value = google_ids
       blacklist.save
       #Alert that the new landmarks file was successfuly updated
-      #unless Oneclick::Application.config.support_emails.nil?
-      #  UserMailer.blacklist_succeeded_email(Oneclick::Application.config.support_emails.split(',')).deliver!
-      #end
+      unless Setting.support_emails.nil?
+        UserMailer.blacklist_succeeded_email(Setting.support_emails.split(',')).deliver!
+      end
     end
 
   end
@@ -367,7 +367,7 @@ namespace :landmarks do
       Landmark.where(landmark_type: 'STOP').is_old.delete_all
       Landmark.where(landmark_type: 'STOP').update_all(old: false)
       puts 'Done: Loaded ' + Landmark.where(landmark_type: 'STOP').count.to_s + ' new Stops'
-      #UserMailer.stops_succeeded_email(Oneclick::Application.config.support_emails.split(','), ungeocoded).deliver!
+      UserMailer.stops_succeeded_email(Setting.support_emails.split(','), ungeocoded).deliver!
     end
 
     ungeocoded.destroy_all
