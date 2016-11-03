@@ -1,5 +1,7 @@
 class Request < ActiveRecord::Base
 
+  serialize :otp_response_body
+
   belongs_to :trip
   has_many :itineraries
 
@@ -19,7 +21,7 @@ class Request < ActiveRecord::Base
 
     if otp_response.code == "200"
       body = otp_response.body
-      self.otp_response_body = body
+      self.otp_response_body = JSON.parse(body)
       self.save
       create_itineraries JSON.parse(body).to_hash['plan']
     end
@@ -54,21 +56,21 @@ class Request < ActiveRecord::Base
       end
 
       #2 Check to see if real-time is available for node stops
-      #unless leg['intermediateStops'].blank?
-      #  trip_time = OTPService.new.get_trip_time leg['tripId']
-      #  unless trip_time.blank?
-      #    stop_times = trip_time['stopTimes']
-      #    leg['intermediateStops'].each do |stop|
-      #      stop_time = stop_times.detect{|hash| hash['stopId'] == stop['stopId']}
-      #      stop['realtimeArrival'] = stop_time['realtimeArrival']
-      #      stop['realtimeDeparture'] = stop_time['realtimeDeparture']
-      #      stop['arrivalDelay'] = stop_time['arrivalDelay']
-      #      stop['departureDelay'] = stop_time['departureDelay']
-      #      stop['realtime'] = stop_time['realtime']
-      #
-      #    end
-      # end
-      #end
+      unless leg['intermediateStops'].blank?
+        trip_time = get_trip_time leg['tripId']
+        unless trip_time.blank?
+          stop_times = trip_time['stopTimes']
+          leg['intermediateStops'].each do |stop|
+            stop_time = stop_times.detect{|hash| hash['stopId'] == stop['stopId']}
+            stop['realtimeArrival'] = stop_time['realtimeArrival']
+            stop['realtimeDeparture'] = stop_time['realtimeDeparture']
+            stop['arrivalDelay'] = stop_time['arrivalDelay']
+            stop['departureDelay'] = stop_time['departureDelay']
+            stop['realtime'] = stop_time['realtime']
+
+          end
+       end
+      end
 
       #3 If a location is a ParkNRide Denote it
       if leg['mode'] == 'CAR' and self.trip_type == 'mode_park_transit'
@@ -83,6 +85,15 @@ class Request < ActiveRecord::Base
 
   def fixup_transfers_count(transfers)
     transfers == -1 ? nil : transfers
+  end
+
+  #Get the list of stops for this trip with realtime info
+  def get_trip_time trip_id
+    if self.otp_response_body.nil? or self.otp_response_body['tripTimes'].nil?
+      return nil
+    end
+    trip_times = self.otp_response_body['tripTimes']
+    return trip_times.detect{|hash| hash['tripId'] == trip_id}
   end
 
 end
