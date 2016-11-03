@@ -19,7 +19,8 @@ namespace :settings do
         {key: 'synonyms_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/synonyms.csv"},
         {key: 'limit_geocoding', value: true},
         {key: 'geocoding_limit', value: 100},
-        {key: 'blacklisted_places_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/blacklist_edited.csv" }
+        {key: 'blacklisted_places_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/blacklist_edited.csv" },
+        {key: 'first_feed_id', value: 1}
     ]
 
     settings.each do |setting|

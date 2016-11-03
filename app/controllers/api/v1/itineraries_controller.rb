@@ -47,11 +47,8 @@ module Api
         trip.arrive_by = !(trip_part[:departure_type].downcase == 'depart')
         trip.scheduled_time = trip_part[:trip_time].to_datetime
 
-        #TODO Make this efficient
-        #If not feed ID is sent, assume the first feed id.  It's almost always 1
-        #first_feed_id = OTPService.new.get_first_feed_id
-        #TODO take out this hardcode, this is only here to see how much time this saves
-        first_feed_id = 1
+        #Get the ID of the first feed.  If it's in the DB, grab it otherwise grab it from OTPService
+        first_feed_id = Setting.first_feed_id ? Setting.first_feed_id : OTPService.new.get_first_feed_id
 
         #Set Banned Routes
         unless banned_routes.blank?
