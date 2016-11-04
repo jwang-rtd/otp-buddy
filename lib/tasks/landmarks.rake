@@ -374,6 +374,31 @@ namespace :landmarks do
 
   end
 
+  desc "Replace Intersections With Street Address"
+  task :replace_intersections => :environment do
+    og = GeocodingService.new
+    Landmark.all.each do |p|
+
+      unless p.address
+        next
+      end
+
+      #Intersections from RTD have @ signs in them
+      unless ('@').in? p.address
+        next
+      end
+
+      street_address = og.get_street_address(og.reverse_geocode(p.lat, p.lng))
+      if street_address
+        puts 'Replacing ' + p.address.to_s + ' with ' + street_address.to_s
+        p.address = street_address
+        p.save
+      end
+
+      #Done to prevent API Errors
+      sleep (3)
+    end
+  end
 
   desc "Load Landmarks, Stops, and Synonyms"
   task :load_landmarks_stops_and_synonyms => :environment do
@@ -381,6 +406,7 @@ namespace :landmarks do
     Rake::Task['landmarks:load_synonyms'].invoke
     Rake::Task['landmarks:load_new_stops'].invoke
     Rake::Task['landmarks:load_blacklisted_places'].invoke
+    Rake::Task['landmarks:replace_intersections'].invoke
   end
 
   desc "Destroy All Landmarks"

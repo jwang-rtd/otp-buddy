@@ -50,6 +50,18 @@ class GeocodingService
     return true, results
   end
 
+  #Takes in results from geocode or reverse_geocode
+  def get_street_address(results)
+    results = results.last
+    result = results.first
+    if result
+      return result[:street_address]
+    else
+      return nil
+    end
+  end
+
+
   def process_results(res)
     i = 0
     results  = []
