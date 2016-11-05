@@ -19,6 +19,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :defaults, path: '/:type/defaults', constraints: { type: /internal|external/ }
+
     end
   end
 

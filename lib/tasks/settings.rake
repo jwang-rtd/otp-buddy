@@ -32,6 +32,67 @@ namespace :settings do
       end
     end
 
+    Rake::Task["settings:add_ui_defaults"].invoke
+
+  end
+
+  desc "Adding Internal/External Defaults"
+  task :add_ui_defaults => :environment do
+
+    otp_internal_defaults_json = {
+        "transitOnlyMode" => "true",
+        "walkOnlyMode" => "true",
+        "bikeOnlyMode" => "false",
+        "parkAndRideMode" => "false",
+        "bikeTransitMode" => "false",
+        "maxWalkTime" => "15",
+        "maxWalkDistance" => "0.5",
+        "maxWalkPace" => "medium",
+        "maxBikeTime" => "15",
+        "maxBikeDistance" => "3.0",
+        "maxBikePace" => "fast",
+        "minTransferTime" => "5",
+        "maxTransferTime" => "30",
+        "allowDeparturesTime" => "5",
+        "defaultPosition" => "39.7392, -104.9903",
+        "priority" => "TIME",
+        "includeRoutes" => "",
+        "excludeRoutes" => "",
+        "defaultLayoverTime" => "45",
+        "showRealtime" => "true",
+        "routesToShow" => "3"
+    }
+
+    otp_external_defaults_json = {
+        "mode" => "mode_transit",
+        "maxWalkTime" => "15",
+        "maxWalkDistance" => "0.5",
+        "maxWalkPace" => "medium",
+        "maxBikeTime" => "15",
+        "maxBikeDistance" => "3.0",
+        "maxBikePace" => "medium",
+        "minTransferTime" => "10",
+        "maxTransferTime" => "30",
+        "showRealtime" => "true",
+        "allowDeparturesTime" => "5",
+        "defaultPosition" => "39.7392, -104.9903",
+        "routesToShow" => "3"
+    }
+
+    Setting.where(key: "otp_internal_defaults_json").first_or_initialize do |new_setting|
+      puts "Creating new setting " + "otp_internal_defaults_json ="
+      puts otp_internal_defaults_json.ai
+      new_setting.value = otp_internal_defaults_json
+      new_setting.save
+    end
+
+    Setting.where(key: "otp_external_defaults_json").first_or_initialize do |new_setting|
+      puts "Creating new setting " + "otp_external_defaults_json ="
+      puts otp_external_defaults_json.ai
+      new_setting.value = otp_external_defaults_json
+      new_setting.save
+    end
+
   end
 
   desc "Deleting ALL Settings"
