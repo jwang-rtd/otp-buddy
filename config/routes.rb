@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       patch 'set_landmarks_file'
       patch 'set_synonyms_file'
       patch 'set_open_trip_planner'
+      patch 'set_blacklisted_places_file'
     end
   end
 

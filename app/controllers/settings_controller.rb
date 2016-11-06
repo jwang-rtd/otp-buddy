@@ -4,6 +4,7 @@ class SettingsController < ApplicationController
     @boundary = Setting.where(key: 'callnride_boundary').first_or_initialize
     @landmarks_file = Setting.where(key: 'landmarks_file').first_or_initialize
     @synonyms_file = Setting.where(key: 'synonyms_file').first_or_initialize
+    @blacklisted_places_file = Setting.where(key: 'blacklisted_places_file').first_or_initialize
     @open_trip_planner = Setting.where(key: 'open_trip_planner').first_or_initialize
   end
 
@@ -76,6 +77,35 @@ class SettingsController < ApplicationController
       setting.save
     else
       error_msgs << "Synonyms URL cannot be blank."
+    end
+
+
+    if error_msgs.size > 0
+      flash[:error] = error_msgs.join(' ')
+    elsif info_msgs.size > 0
+      flash[:success] = info_msgs.join(' ')
+    end
+
+
+    respond_to do |format|
+      format.js
+      format.html {redirect_to settings_path}
+    end
+  end
+
+  def set_blacklisted_places_file
+
+    info_msgs = []
+    error_msgs = []
+
+    new_value = params[:setting][:value] if params[:setting]
+
+    if !new_value.blank?
+      setting = Setting.where(key: 'blacklisted_places_file').first_or_initialize
+      setting.value = new_value
+      setting.save
+    else
+      error_msgs << "Blacklisted Places URL cannot be blank."
     end
 
 
