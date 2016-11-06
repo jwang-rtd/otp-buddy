@@ -29,6 +29,8 @@ Rails.application.routes.draw do
     collection do
       patch 'set_callnride_boundary'
       patch 'set_landmarks_file'
+      patch 'set_synonyms_file'
+      patch 'set_open_trip_planner'
     end
   end
 

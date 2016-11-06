@@ -7,6 +7,22 @@
     .panel.panel-default
       .panel-heading
         %h4
+          = "Set Location of OpenTripPlanner Server"
+      .panel-body
+        = simple_form_for @open_trip_planner, url: set_open_trip_planner_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
+          %div.col-md-10
+            %label
+              = "URL of the Open Trip Planner Server"
+            = f.input :value, required:true, label: false, :as => :string, input_html: {:size => 70}
+          %div.col-md-2.text-center
+            = f.submit "OK", class: 'btn action-button', role: 'button'
+
+%div.row
+  %div.col-md-1
+  %div.col-md-10
+    .panel.panel-default
+      .panel-heading
+        %h4
           = "Set CallnRide"
       .panel-body
         = simple_form_for @boundary, url: set_callnride_boundary_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
@@ -29,6 +45,22 @@
           %div.col-md-10
             %label
               = "URL of the Landmarkss File"
+            = f.input :value, required:true, label: false, :as => :string, input_html: {:size => 70}
+          %div.col-md-2.text-center
+            = f.submit "OK", class: 'btn action-button', role: 'button'
+
+%div.row
+  %div.col-md-1
+  %div.col-md-10
+    .panel.panel-default
+      .panel-heading
+        %h4
+          = "Set Location of Synonyms File"
+      .panel-body
+        = simple_form_for @synonyms_file, url: set_synonyms_file_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
+          %div.col-md-10
+            %label
+              = "URL of the Synonyms File"
             = f.input :value, required:true, label: false, :as => :string, input_html: {:size => 70}
           %div.col-md-2.text-center
             = f.submit "OK", class: 'btn action-button', role: 'button'
