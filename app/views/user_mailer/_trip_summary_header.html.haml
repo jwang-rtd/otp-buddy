@@ -1,0 +1,33 @@
+.row
+  .col-sm-12{style: "background: white; margin: 0px 0px 5px 0px; border-radius: 5px; padding: 10px 0px 0px 0px;"}
+    %table.trip_summary_container{style: "padding: 10px 0px;"}
+      %tr
+      %td.trip_summary{style: "valign: middle; font-family: 'Helvetica Neue', Arial; font-size: 0.88em;"}
+
+        %span{style: "font-weight: bold;"}="Depart at"
+        %span=' : '
+        //%span=format_time(itinerary.start_time.in_time_zone)
+        %span='TODO 10:00 FIX THIS'
+
+        %span{style: "font-size: 0.6em; padding: 0px 12px; color: #b1b1b1;"}=' | '
+        %span{style: "font-weight: bold;"}="Arrive at"
+        %span=' : '
+        //%span=format_time(itinerary.end_time.in_time_zone)
+        %span='TODO FIX THIS'
+
+        %span{style: "font-size: 0.6em; padding: 0px 12px; color: #b1b1b1;"}=' | '
+        %span{style: "font-weight: bold;"}= 'Duration'
+        %span=' : '
+        //%span.duration= duration_to_words(itinerary.duration)
+        %span.duration='DURATION TO WORD TODO'
+
+        %span{style: "font-size: 0.6em; padding: 0px 12px; color: #b1b1b1;"}=' | '
+        %span{style: "font-weight: bold;"}= 'Walking'
+        %span=' : '
+        //%span=duration_to_words(itinerary.walk_time)
+        %span='WALK TIME TODO'
+
+        %span{style: "font-size: 0.6em; padding: 0px 12px; color: #b1b1b1;"}=' | '
+        %span{style: "font-weight: bold;"}='Transfers'
+        %span=' : '
+        %span=itinerary.transfers.to_s

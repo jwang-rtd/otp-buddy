@@ -1,0 +1,43 @@
+%head
+
+- @itineraries.each do |itinerary|
+-   trip = itinerary.request.trip
+
+  %table.trip_header{style: "font-size:1.0em; padding: 12px 0px; font-family: 'Helvetica Neue', Arial;"}
+    %tr
+      %td{style: "color:grey; padding-right: 10px;"}
+        %strong.trip_header_detail
+          = 'Origin: '
+      %td{style: "padding-right: 10px;"}
+        %strong.trip_header_detail
+          =itinerary.humanized_origin
+    %tr
+      %td{style: "color:grey; weight:strong; padding-right: 10px;"}
+        %strong.trip_header_detail
+          ='Destination: '
+      %td{style: "padding-right: 10px;"}
+        %strong.trip_header_detail
+          =itinerary.humanized_destination
+    %tr
+      %td{style: "color:grey; padding-right: 10px;"}
+        %strong.trip_header_detail
+          ='Date: '
+      %td{style: "padding-right: 10px;"}
+        %strong
+          =trip.scheduled_time.in_time_zone.strftime("%A, %B %-d")
+
+    -unless @trip_link.blank?
+      %tr
+        %td{style: "color:grey; weight:strong; padding-right: 10px;"}
+          %strong.trip_header_detail
+            ='Trip Link' + ':  '
+        %td{style: "padding-right: 10px;"}
+          %a{href: @trip_link + trip.id.to_s}
+            =@trip_link + trip.id.to_s
+
+
+
+  = render :partial => 'trip_summary_header', :locals => { :itinerary => itinerary }
+  //= render :partial => get_trip_partial(itinerary), :locals => { :itinerary => itinerary }
+  //TODO Add the full email partial
+
