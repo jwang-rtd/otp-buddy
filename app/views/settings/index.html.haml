@@ -44,7 +44,7 @@
         = simple_form_for @landmarks_file, url: set_landmarks_file_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
           %div.col-md-10
             %label
-              = "URL of the Landmarkss File"
+              = "URL of the Landmarks File"
             = f.input :value, required:true, label: false, :as => :string, input_html: {style: "width:100%;"}
           %div.col-md-2.text-center
             = f.submit "OK", class: 'btn action-button', role: 'button'
