@@ -1,0 +1,13 @@
+defaults: &defaults
+  GOOGLE_PLACES_API_KEY: "Your Google Places API Key"
+  SMTP_MAIL_ADDR:           "your email server"
+  SMTP_MAIL_PORT:           "your email port"
+  SMTP_MAIL_USER_NAME:      "your email user name"
+  SMTP_MAIL_PASSWORD:       "your email password"
+  SMTP_MAIL_FROM:           "Mail sent from this application will be sent from this email address."
+
+development:
+  <<: *defaults
+
+
+
