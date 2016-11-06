@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :settings, :only => [:index] do
     collection do
       patch 'set_callnride_boundary'
+      patch 'set_landmarks_file'
     end
   end
 
