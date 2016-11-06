@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   end
 
   #Not API
+
+  root 'settings#index'
+
   resources :settings, :only => [:index] do
     collection do
       patch 'set_callnride_boundary'
