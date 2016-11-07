@@ -1,19 +1,58 @@
 module MapHelper
 
+  require 'open-uri'
+
+  def create_static_map
+
+    legs = self.json_legs
+    markers = self.create_itinerary_markers
+    polylines = self.create_itinerary_polylines(legs)
+
+    params = {
+        'size' => '700x435',
+        'maptype' => 'roadmap'
+    }
+
+    iconUrls = {
+        'blueMiniIcon' => 'https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png',
+        'startIcon' => 'http://maps.google.com/mapfiles/dd-start.png',
+        'stopIcon' => 'http://maps.google.com/mapfiles/dd-end.png'
+    }
+
+    markersByIcon = markers.group_by { |m| m["iconClass"] }
+
+    url = "https://maps.googleapis.com/maps/api/staticmap?" + params.to_query
+    markersByIcon.keys.each do |iconClass|
+      marker = '&markers=icon:' + iconUrls[iconClass]
+      markersByIcon[iconClass].each do |icon|
+        marker += '|' + icon["lat"].to_s + "," + icon["lng"].to_s
+      end
+      url += URI::encode(marker)
+    end
+
+    polylines.each do |polyline|
+
+      color = polyline["options"]["color"] || '#00FF00'
+      color.slice!(0)
+
+      enc = polyline['geom'] #Polylines::Encoder.encode_points(polyline['geom'])
+      url += URI::encode('&path=color:0x' + color.to_s + '|weight:5|enc:' + enc)
+    end
+
+    open(url, 'rb').read
+  end
+
   # Create an array of map markers suitable for the Leaflet plugin.
   def create_itinerary_markers
 
-    trip = self.request.trip
     legs = self.json_legs
-
     markers = []
 
     if legs
       legs.each do |leg|
 
-        #place = {:name => leg.start_place.name, :lat => leg.start_place.lat, :lon => leg.start_place.lon, :address => leg.start_place.name}
         place = {:name => self.humanized_origin, :lat => leg['from']['lat'], :lon => leg['from']['lon'], :address => leg['from']['name']}
-        markers << self.get_leg_start_marker(place, 'start_leg', 'blueMiniIcon')
+        markers << self.get_addr_marker(place, 'start_leg', 'blueMiniIcon')
 
         place = {:name => leg['to']['name'], :lat => leg['to']['lat'], :lon => leg['to']['lon'], :address => leg['to']['name']}
         markers << self.get_addr_marker(place, 'end_leg', 'blueMiniIcon')
@@ -23,42 +62,23 @@ module MapHelper
 
     # Add start and stop after legs to place above other markers
     place = {:name => self.humanized_origin, :lat => self.request.trip.origin.lat, :lon => self.request.trip.origin.lng, :address => self.humanized_origin}
-
-    markers << self.get_start_stop_marker(place)
+    markers << self.get_addr_marker(place, 'start_location', 'startIcon')
     place = {:name => self.humanized_destination, :lat => self.request.trip.destination.lat, :lon => self.request.trip.destination.lng, :address => self.humanized_destination}
-    markers << self.get_start_stop_marker(place)
+    markers << self.get_addr_marker(place, 'end_location', 'stopIcon')
 
     return markers
   end
 
-  def get_leg_start_marker(addr, id, icon)
-    address = addr[:formatted_address].nil? ? addr[:address] : addr[:formatted_address]
-    {
-        "id" => id,
-        "lat" => addr[:lat],
-        "lng" => addr[:lon],
-        "name" => addr[:name],
-        "iconClass" => icon,
-        "title" =>  addr[:name], #only diff from get_addr_marker
-        "description" => "MAP"
-    }
-  end
-
   def get_addr_marker(addr, id, icon)
-    address = addr[:formatted_address].nil? ? addr[:address] : addr[:formatted_address]
     {
         "id" => id,
         "lat" => addr[:lat],
         "lng" => addr[:lon],
         "name" => addr[:name],
         "iconClass" => icon,
-        "title" =>  address,
+        "title" =>  addr[:name],
         "description" => "MAP"
     }
-  end
-
-  def get_start_stop_marker(place)
-    get_addr_marker(place, 'start', 'startIcon')
   end
 
   #Returns an array of polylines, one for each leg
@@ -68,7 +88,7 @@ module MapHelper
     legs.each_with_index do |leg, index|
       polylines << {
           "id" => index,
-          "geom" => leg['geometry'] || [],
+          "geom" => leg['legGeometry']['points'] || [],
           "options" => self.get_leg_display_options(leg)
       }
     end
@@ -82,7 +102,7 @@ module MapHelper
     if leg['mode'].nil?
       a = {"className" => 'map-tripleg map-tripleg-unknown'}
     else
-      a = {"className" => "map-tripleg", "color" => leg['routeColor'] || "#FFFFFF" }
+      a = {"className" => "map-tripleg", "color" => leg['routeColor'] || "#000000" }
     end
     return a
   end
