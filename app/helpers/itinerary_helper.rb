@@ -1,6 +1,8 @@
 module ItineraryHelper
   # This module helps objects speak like a human and not like a computer
 
+  METERS_TO_MILES = 0.000621371192
+
   def humanized_origin
     origin = self.request.trip.origin
     return humanized_place origin
@@ -69,4 +71,86 @@ module ItineraryHelper
     time_string
   end
 
-end
+  def humanized_duration_description leg
+    start_time = otp_time_to_datetime leg['startTime']
+    end_time = otp_time_to_datetime leg['endTime']
+
+    format_time(start_time) + ' to ' + format_time(end_time)
+
+  end
+
+  def humanized_distance_from_leg leg
+
+    return self.exact_distance_to_words leg['distance']
+
+  end
+
+  def otp_time_to_datetime otp_time
+    Time.at(otp_time.to_f/1000).in_time_zone("UTC")
+  end
+
+  def leg_steps leg
+    html = "<div data-toggle='collapse' data-target='#drivingDirections'><a class='drivingDirectionsLink'>" + self.short_description(leg) + "</a></div><div id='drivingDirections' class='panel-body collapse'>"
+
+    leg['steps'].each do |hash|
+      html << "<p>"
+      html << hash["relativeDirection"].to_s.humanize
+      html << " on to "
+      html << hash["streetName"].to_s
+      html << ", "
+      html << (hash["distance"] * 0.000621371).round(2).to_s
+      html << "miles </br></p>"
+    end
+
+    html << "</div>"
+    return html.html_safe
+  end
+
+  def short_description leg
+
+    puts leg['mode']
+
+    case leg['mode']
+      when 'WALK'
+        return "Walk to " + leg['to']['name']
+      when 'BICYCLE'
+        return "Bicycle to " + leg['to']['name']
+      when 'CAR'
+        return "Drive to " + leg['to']['name']
+      when 'TRAM', 'SUBWAY', 'RAIL', 'BUS', 'FERRY', 'CABLE_CAR', 'GONDOLA', 'FUNICULAR'
+        agency = leg['agencyName']
+        route_name = leg['routeShortName'] || leg['routeLongName']
+        if leg['headsign']
+          return [agency, leg['route'], leg['mode'].humanize, leg['headsign'], 'to', leg['to']['name']].join(' ')
+        else
+          return [agency, leg['route'], leg['mode'].humanize, 'to', leg['to']['name']].join(' ')
+        end
+
+      else
+        return leg['mode'].humanize
+
+    end
+
+  end
+
+  def exact_distance_to_words(dist_in_meters)
+    return '' unless dist_in_meters
+
+    # convert the meters to miles
+    miles = dist_in_meters * METERS_TO_MILES
+    if miles < 0.001
+      dist_str = [miles.round(4).to_s, 'miles'].join(' ')
+    elsif miles < 0.01
+      dist_str = [miles.round(3).to_s, 'miles'].join(' ')
+    else
+      dist_str = [miles.round(2).to_s, 'miles'].join(' ')
+    end
+
+    dist_str
+  end
+
+  def get_mode_icon_from_leg leg
+
+  end
+
+end #Module

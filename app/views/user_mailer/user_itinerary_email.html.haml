@@ -38,6 +38,6 @@
 
 
   = render :partial => 'trip_summary_header', :locals => { :itinerary => itinerary }
-  //= render :partial => get_trip_partial(itinerary), :locals => { :itinerary => itinerary }
-  //TODO Add the full email partial
+  = render :partial => 'transit_details', :locals => { :itinerary => itinerary }
+
 
