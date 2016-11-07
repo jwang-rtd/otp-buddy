@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       patch 'set_open_trip_planner'
       patch 'set_blacklisted_places_file'
       patch 'set_global_boundary'
+      patch 'set_host'
     end
   end
 
