@@ -7,6 +7,7 @@ class SettingsController < ApplicationController
     @blacklisted_places_file = Setting.where(key: 'blacklisted_places_file').first_or_initialize
     @open_trip_planner = Setting.where(key: 'open_trip_planner').first_or_initialize
     @global_boundary = Setting.where(key: 'global_boundary').first_or_initialize
+    @host = Setting.where(key: 'host').first_or_initialize
   end
 
   def set_callnride_boundary
@@ -168,6 +169,36 @@ class SettingsController < ApplicationController
       setting.save
     else
       error_msgs << "OpenTripPlanner URL cannot be blank."
+    end
+
+
+    if error_msgs.size > 0
+      flash[:error] = error_msgs.join(' ')
+    elsif info_msgs.size > 0
+      flash[:success] = info_msgs.join(' ')
+    end
+
+
+    respond_to do |format|
+      format.js
+      format.html {redirect_to settings_path}
+    end
+  end
+
+  def set_host
+
+    info_msgs = []
+    error_msgs = []
+
+    value = params[:setting][:value] if params[:setting]
+
+    if !value.blank?
+      setting = Setting.where(key: 'host').first_or_initialize
+      setting.value = value
+      setting.save
+    else
+      setting = Setting.where(key: 'host').first_or_initialize
+      setting.delete
     end
 
 
