@@ -56,6 +56,7 @@ gem 'figaro'
 gem 'haml-rails'
 gem 'simple_form'
 gem 'rubyzip'
+gem 'polylines'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -155,4 +155,41 @@ module ItineraryHelper
     return "#{Setting.host}/assets/modes/#{mode.downcase}.png"
   end
 
+  def create_static_map
+
+    legs = self.json_legs
+    markers = self.create_itinerary_markers
+    polylines = self.create_itinerary_polylines(legs)
+
+    #TODO Take out these API Keys
+    params = {
+        'size' => '700x435',
+        'maptype' => 'roadmap',
+        'client_id' =>  ENV['GOOGLE_GEOCODER_ACCOUNT'],
+        'channel' => ENV['GOOGLE_GEOCODER_CHANNEL']
+    }
+
+    iconUrls = {
+        'blueMiniIcon' => 'https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png',
+        'startIcon' => 'http://maps.google.com/mapfiles/dd-start.png',
+        'stopIcon' => 'http://maps.google.com/mapfiles/dd-end.png'
+    }
+
+    markersByIcon = markers.group_by { |m| m["iconClass"] }
+
+    url = "https://maps.googleapis.com/maps/api/staticmap?" + params.to_query
+    markersByIcon.keys.each do |iconClass|
+      marker = '&markers=icon:' + iconUrls[iconClass]
+      markersByIcon[iconClass].each do |icon|
+        marker += '|' + icon["lat"].to_s + "," + icon["lng"].to_s
+      end
+      url += URI::encode(marker)
+    end
+
+    puts url
+    #TODO Put the POLYLINES BACK IN HERE
+
+    open(url, 'rb').read
+  end
+
 end #Module

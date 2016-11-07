@@ -65,7 +65,7 @@ class UserMailer < ApplicationMailer
     #TODO Add static map
 
     #itineraries.each do |itin|
-    #  attachments.inline[itin.id.to_s + '.png'] = create_static_map(itin)
+    #  attachments.inline[itin.id.to_s + '.png'] = itin.create_static_map
     #end
 
     mail(to: addresses, subject: subject, from: @@from)
