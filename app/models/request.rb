@@ -38,6 +38,8 @@ class Request < ActiveRecord::Base
       itinerary.wait_time = itinerary_hash['waitingTime']
       itinerary.transfers = fixup_transfers_count(itinerary_hash['transfers'])
       itinerary.walk_distance = itinerary_hash['walkDistance']
+      itinerary.start_time = Time.at((itinerary_hash['startTime']).to_f/1000).in_time_zone("UTC")
+      itinerary.end_time = Time.at((itinerary_hash['endTime']).to_f/1000).in_time_zone("UTC")
       itinerary.json_legs = fixup_legs itinerary_hash['legs'] || []
       itinerary.save
     end

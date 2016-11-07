@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :itineraries do
         collection do
           post 'plan'
+          post 'email'
         end
       end
 

@@ -1,0 +1,39 @@
+%table.transit_details{style: "padding: 16px 5px;"}
+  %tr
+    %td.itinerary_icons{style: "text-align: center;line-height: normal;font-size: 2.25em; padding: 16px 10px;"}
+      //TODO Do not hardcode this URL
+      %img{src: "https://s3.amazonaws.com/oneclick-rtd/images/start.png", style: "height: 26px; width: 26px; vertical-align: top;", height: "26p", width: "26"}
+    %td.itin_text_container{style: "padding-left: 5px;"}
+      .itinerary_text{style: "text-align: left;font-family: 'Helvetica Neue', Arial; line-height: 1em; padding-left: 8px; strong {top: 0; position: absolute;}"}
+        = "Start " + itinerary.humanized_origin
+      .itinerary_text_small{style: "font-family: 'Helvetica Neue', Arial; font-size: 0.87em; color: #4862c8; text-align: left; vertical-align: top; padding-top: 8px; padding-left: 8px;"}
+        = itinerary.humanized_start_time
+
+  - itinerary.json_legs.each do |leg|
+    %tr
+      %td.itinerary_icons{style: "vertical-align:top; text-align: center;line-height: normal;font-size: 2.25em;padding: 16px 10px;"}
+        %img{:src => itinerary.get_mode_icon_from_leg(leg), style: "height: 26px; width: 26px; vertical-align: top;", height: "26p", width: "26"}
+      %td.itin_text_container{style: "padding: 16px 10px;"}
+        .itinerary_text{style: "text-align: left;font-family: 'Helvetica Neue', Arial; line-height: 1em; padding-left: 8px; strong {top: 0; position: absolute;}"}
+          - if leg['mode'] == "CAR" || leg['mode'] == "BICYCLE" || leg['mode'] == "WALK"
+            = itinerary.leg_steps(leg)
+          - else
+            = itinerary.short_description(leg)
+
+        .itinerary_text_small{style: "font-family: 'Helvetica Neue', Arial; font-size: 0.87em; color: #4862c8; text-align: left; vertical-align: top; padding-top: 8px; padding-left: 8px;"}
+          = itinerary.humanized_duration_description leg
+          - if leg['mode'] == 'WALK'
+            = itinerary.humanized_distance_from_leg leg
+  %tr
+    %td.itinerary_icons{style: "text-align: center;line-height: normal;font-size: 2.25em;padding: 16px 10px;"}
+      //TODO Do not hardcode this URL
+      %img{src: "https://s3.amazonaws.com/oneclick-rtd/images/stop.png", style: "height: 26px; width: 26px; vertical-align: top;", height: "26p", width: "26"}
+    %td.itin_text_container{style: "padding: 16px 10px;"}
+      .itinerary_text{style: "text-align: left;font-family: 'Helvetica Neue', Arial; line-height: 1em; padding-left: 8px; strong {top: 0; position: absolute;}"}
+        = "Arrive " + itinerary.humanized_destination
+      .itinerary_text_small{style: "font-family: 'Helvetica Neue', Arial; font-size: 0.87em; color: #4862c8; text-align: left; vertical-align: top; padding-top: 8px; padding-left: 8px;"}
+        = itinerary.humanized_end_time
+
+//-if attachments[itinerary.id.to_s + '.png']
+//  %div{style: "width:100%;background: white; border-radius: 5px; padding-top: 10px;"}
+//    =image_tag attachments[itinerary.id.to_s + '.png'].url
