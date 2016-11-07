@@ -155,4 +155,5 @@ module ItineraryHelper
     return "#{Setting.host}/assets/modes/#{mode.downcase}.png"
   end
 
+
 end #Module
