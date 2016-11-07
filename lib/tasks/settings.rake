@@ -21,7 +21,8 @@ namespace :settings do
         {key: 'geocoding_limit', value: 100},
         {key: 'blacklisted_places_file', value: "https://s3.amazonaws.com/oneclick-bin/tmp/blacklist_edited.csv" },
         {key: 'first_feed_id', value: 1},
-        {key: 'support_emails', value: 'dedwards8@gmail.com'}
+        {key: 'support_emails', value: 'dedwards8@gmail.com'},
+        {key: 'host', value: 'http://localhost:3000'}
     ]
 
     settings.each do |setting|

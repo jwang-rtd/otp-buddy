@@ -108,8 +108,6 @@ module ItineraryHelper
 
   def short_description leg
 
-    puts leg['mode']
-
     case leg['mode']
       when 'WALK'
         return "Walk to " + leg['to']['name']
@@ -150,7 +148,11 @@ module ItineraryHelper
   end
 
   def get_mode_icon_from_leg leg
+    return get_mode_icon leg['mode']
+  end
 
+  def get_mode_icon mode
+    return "#{Setting.host}/assets/modes/#{mode.downcase}.png"
   end
 
 end #Module
