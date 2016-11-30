@@ -53,6 +53,9 @@ gem 'faraday_middleware'
 #Needed for application.yml
 gem 'figaro'
 
+#Needed to show map of CallNRide Boundary
+gem 'leaflet-rails'
+
 gem 'haml-rails'
 gem 'simple_form'
 gem 'rubyzip'

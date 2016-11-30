@@ -25,13 +25,16 @@
         %h4
           = "Set CallnRide Boundary"
       .panel-body
-        = simple_form_for @boundary, url: set_callnride_boundary_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
-          %div.col-md-10
-            %label
-              = "Upload Zippled CallnRide Shapefile"
-            = f.input "file", required:true, label: false, :as => :file
-          %div.col-md-2.text-center
-            = f.submit "OK", class: 'btn action-button', role: 'button'
+        %div.row
+          = simple_form_for @boundary, url: set_callnride_boundary_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
+            %div.col-md-10
+              %label
+                = "Upload Zippled CallnRide Shapefile"
+              = f.input "file", required:true, label: false, :as => :file
+            %div.col-md-2.text-center
+              = f.submit "OK", class: 'btn action-button', role: 'button'
+        %div.row
+          %div{id: 'mapid', style: "height:400px;"}
 
 %div.row
   %div.col-md-1
@@ -112,3 +115,24 @@
             = f.input :value, required:true, label: false, :as => :text, input_html: {rows: 5, style: "width:100%;"}
           %div.col-md-2.text-center
             = f.submit "OK", class: 'btn action-button', role: 'button'
+
+:javascript
+
+  var mymap = L.map('mapid').setView([39.7392, -104.99], 10);
+
+  L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '',
+      maxZoom: 18,
+      id: '',
+      accessToken: ''
+  }).addTo(mymap);
+
+
+  //var latlngs = JSON.parse('#{GeographyService.new.callnride_boundary_array}');
+  var latlngs = JSON.parse('#{GeographyService.new.global_boundary_array}');
+
+  console.log(latlngs);
+  var polygon = L.multiPolygon(latlngs, {color: 'red'}).addTo(mymap);
+  // zoom the map to the polygon
+  mymap.fitBounds(polygon.getBounds());
+

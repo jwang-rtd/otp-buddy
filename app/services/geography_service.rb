@@ -55,4 +55,32 @@ class GeographyService
     return "Call-N-Ride Boundary Updated"
   end
 
+  #TODO Simplify this (Potentially Use RGEO Json library like the global_boundary_as_geojson method)
+  def callnride_boundary_array
+    if Setting.callnride_boundary.nil?
+      return []
+    end
+    # Returns an array of coverage zone polygon geoms
+    myArray = []
+    Setting.callnride_boundary.each do |boundary|
+      polygon_array = []
+      boundary[:geometry].each do |polygon|
+        ring_array  = []
+        polygon.exterior_ring.points.each do |point|
+          ring_array << [point.y, point.x]
+        end
+        polygon_array << ring_array
+        polygon.interior_rings.each do |ring|
+          ring_array = []
+          ring.points.each do |point|
+            ring_array << [point.y, point.x]
+          end
+          polygon_array << ring_array
+        end
+      end
+      myArray << polygon_array
+    end
+    myArray
+  end
+
 end
