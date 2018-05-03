@@ -11,6 +11,11 @@ class GeographyService
     end
   end
 
+    # Check to see if a global boundary exists?
+  def global_boundary_exists?
+    return !Setting.global_boundary.nil?
+  end
+
   def store_callnride_boundary(shapefile_path)
     shapes = []
     unless shapefile_path.nil?
