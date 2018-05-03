@@ -57,7 +57,7 @@ module Api
         lat = origin[:location][:lat]
         lng = origin[:location][:lng]
 
-        gs = GeographyServices.new
+        gs = GeographyService.new
         if gs.global_boundary_exists?
           render json: {result: gs.within_global_boundary?(lat,lng)}
           return
