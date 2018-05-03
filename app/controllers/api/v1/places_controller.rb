@@ -55,7 +55,7 @@ module Api
       def within_area
         
         #TODO REMOVE THIS
-        render json: {result: false}
+        render json: {result: true}
         return 
 
         origin = params[:geometry]
