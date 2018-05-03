@@ -53,6 +53,11 @@ module Api
       end
 
       def within_area
+        
+        #TODO REMOVE THIS
+        render json: {result: false}
+        return 
+
         origin = params[:geometry]
         lat = origin[:location][:lat]
         lng = origin[:location][:lng]

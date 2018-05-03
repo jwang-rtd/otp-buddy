@@ -16,6 +16,15 @@ class GeographyService
     return !Setting.global_boundary.nil?
   end
 
+  # Check to see if a point falls within the global boundary for this system
+  def within_global_boundary?(lat,lng)
+    boundary = Setting.global_boundary
+    mercator_factory = RGeo::Geographic.simple_mercator_factory
+    test_point = mercator_factory.point(lng, lat)
+    boundary_shape = mercator_factory.parse_wkt(boundary)
+    return boundary_shape.contains? test_point
+  end
+
   def store_callnride_boundary(shapefile_path)
     shapes = []
     unless shapefile_path.nil?
