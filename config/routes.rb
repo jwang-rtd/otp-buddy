@@ -17,6 +17,7 @@ Rails.application.routes.draw do
           get 'boundary'
           get 'synonyms'
           get 'blacklist'
+          post 'within_area'
         end
       end
 

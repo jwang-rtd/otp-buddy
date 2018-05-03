@@ -52,6 +52,20 @@ module Api
         render status: 200, json: blacklist.as_json
       end
 
+      def within_area
+        origin = params[:geometry]
+        lat = origin[:location][:lat]
+        lng = origin[:location][:lng]
+
+        gs = GeographyServices.new
+        if gs.global_boundary_exists?
+          render json: {result: gs.within_global_boundary?(lat,lng)}
+          return
+        end
+
+        render json: {result: false}
+      end
+
     end
   end
 end
