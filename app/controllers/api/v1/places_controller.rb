@@ -5,7 +5,7 @@ module Api
       def search
         #Get the Search String
         search_string = params[:search_string]
-        include_user_pois = params[:include_user_pois]                          a
+        include_user_pois = params[:include_user_pois]                         
         max_results = (params[:max_results] || 5).to_i
 
         locations = []

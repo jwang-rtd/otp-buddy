@@ -4,7 +4,7 @@ source 'http://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use postgresql as the database for Active Record
-# gem 'pg', '~> 0.15'
+ gem 'pg', '~> 0.15'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -37,6 +37,8 @@ gem 'autoprefixer-rails'
 # gem 'capistrano-rails', group: :development
 
 gem 'awesome_print'
+gem 'rb-readline'
+gem 'rails_12factor'
 
 gem 'responders', '~> 2.0'
 
@@ -62,8 +64,8 @@ gem 'rubyzip'
 gem 'polylines'
 
 # Needed to Connect to Oracle DB
-gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
-gem 'ruby-oci8'
+#gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+#gem 'ruby-oci8'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

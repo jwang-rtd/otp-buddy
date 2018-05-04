@@ -42,7 +42,6 @@ class Request < ActiveRecord::Base
       itinerary.end_time = Time.at((itinerary_hash['endTime']).to_f/1000).in_time_zone("UTC")
       itinerary.json_legs = fixup_legs itinerary_hash['legs'] || []
       itinerary.server_status = 200
-      
       itinerary.save
     end
   end

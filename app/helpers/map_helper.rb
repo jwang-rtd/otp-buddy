@@ -21,7 +21,7 @@ module MapHelper
 
     markersByIcon = markers.group_by { |m| m["iconClass"] }
 
-    url = "https://maps.googleapis.com/maps/api/staticmap?" + params.to_query
+    url = "https://maps.googleapis.com/maps/api/staticmap?" + params.to_query 
     markersByIcon.keys.each do |iconClass|
       marker = '&markers=icon:' + iconUrls[iconClass]
       markersByIcon[iconClass].each do |icon|
@@ -38,6 +38,9 @@ module MapHelper
       enc = polyline['geom'] #Polylines::Encoder.encode_points(polyline['geom'])
       url += URI::encode('&path=color:0x' + color.to_s + '|weight:5|enc:' + enc)
     end
+    puts 'here is the URL'
+    url += "&key=AIzaSyBlknhSoVbT4xUbip4dn0-3zpzMZnD2dGQ"
+    puts url
 
     open(url, 'rb').read
   end
