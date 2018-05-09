@@ -124,4 +124,12 @@ class OTPService
     hash[trip_type.to_sym]
   end
 
+  def pass path
+    url = "#{Setting.open_trip_planner}/#{path}"
+    Rails.logger.info("Calling #{url}")
+    resp = Net::HTTP.get_response(URI.parse(url))
+    Rails.logger.info(resp.body.ai)
+    return JSON.parse(resp.body)
+  end
+
 end

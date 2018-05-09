@@ -17,6 +17,13 @@ module Api
         (params[:type] == "internal") ? "otp_internal_defaults_json" : "otp_external_defaults_json"
       end
 
+      def pass 
+        query_string = request.query_string
+        query_string.slice!(0,5)
+        resp = OTPService.new.pass(query_string)
+        render json: {status: 200, message: resp}
+      end
+
     end
   end
 end
