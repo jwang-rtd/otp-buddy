@@ -46,7 +46,7 @@ module Api
 
         trip_part = trip_parts.first
         trip.arrive_by = !(trip_part[:departure_type].downcase == 'depart')
-        trip.scheduled_time = trip_part[:trip_time].to_datetime
+        trip.scheduled_time = trip_part[:trip_time].to_datetime.in_time_zone
 
         #Get the ID of the first feed.  If it's in the DB, grab it otherwise grab it from OTPService
         first_feed_id = Setting.first_feed_id ? Setting.first_feed_id : OTPService.new.get_first_feed_id
