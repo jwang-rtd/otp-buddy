@@ -4,7 +4,6 @@ module Api
 
       def plan
 
-        puts '1'
         #Unpack params
         modes = params['modes'] || ['mode_transit']
         trip_parts = params[:itinerary_request]
@@ -22,7 +21,6 @@ module Api
         source_tag = params[:source_tag]
 
 
-        puts '2'
         #Assign Meta Data
         trip = Trip.new
         trip.token = trip_token
@@ -37,7 +35,6 @@ module Api
         trip.source_tag = source_tag
 
 
-        puts '3'
         #Build the Trip Places
         origin = Place.new
         destination = Place.new
@@ -67,8 +64,6 @@ module Api
           trip.banned_routes = banned_routes_string.chop
         end
 
-        puts '4'
-
         #Set Preferred Routes
         unless preferred_routes.blank?
           preferred_routes_string = ""
@@ -83,8 +78,6 @@ module Api
           trip.preferred_routes = preferred_routes_string.chop
         end
 
-        puts '5'
-
         #Create a request for each Mode
         modes.each do |mode|
           request = Request.new
@@ -94,7 +87,6 @@ module Api
         end
 
         trip.plan
-        puts '6'
 
         origin_in_callnride, origin_callnride = trip.origin.within_callnride?
         destination_in_callnride, destination_callnride = trip.destination.within_callnride?
@@ -102,7 +94,6 @@ module Api
         render status: 200, json: {trip_id: trip.id, origin: trip.origin.build_place_details_hash, destination: trip.destination.build_place_details_hash, origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, trip_token: trip.token, itineraries: trip.itineraries.map{ |i| i.serialized }}
 
 
-        puts '7'
         trip.save
       end #Plan
 
