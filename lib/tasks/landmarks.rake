@@ -250,14 +250,14 @@ namespace :landmarks do
     blacklist = Setting.where(key: "blacklisted_places").first_or_initialize
 
     #If the file is new, updated_at will blank. If it is not blank check the date.
-    if blacklist.updated_at
-      if blacklist.updated_at > blacklist_file.last_modified
-        puts blf.to_s + ' is an old file.'
-        puts 'The blacklist was last updated at: ' + blacklist.updated_at.to_s
-        puts blf.to_s + ' was last update at ' + blacklist_file.last_modified.to_s
-        next
-      end
-    end
+    #if blacklist.updated_at
+    #  if blacklist.updated_at > blacklist_file.last_modified
+    #    puts blf.to_s + ' is an old file.'
+    #    puts 'The blacklist was last updated at: ' + blacklist.updated_at.to_s
+    #    puts blf.to_s + ' was last update at ' + blacklist_file.last_modified.to_s
+    #    next
+    #  end
+    #end
 
     line = 2
     google_ids = []
