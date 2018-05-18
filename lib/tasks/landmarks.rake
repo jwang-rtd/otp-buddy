@@ -214,8 +214,9 @@ namespace :landmarks do
     unless failed
       begin
         #Save the new synonyms
-        synonyms.value = new_synonyms
-        synonyms.save
+        setting = Setting.where(key: "synonyms").first_or_create
+        setting.value = new_synonyms
+        setting.save
       rescue
         unless Setting.support_emails.nil?
           UserMailer.synonyms_failed_email(Setting.support_emails.split(','), "Unable to save new synonyms.", "").deliver!
