@@ -170,17 +170,17 @@ namespace :landmarks do
     #Check to see if this file is newer than the last time synonyms where updated
     synonyms = Setting.synonyms
 
-    if synonyms
-      if synonyms.updated_at > synonyms_file.last_modified
-        puts sm.to_s + ' is an old file.'
-        puts 'Synonyms were last updated at: ' + synonyms.updated_at.to_s
-        puts sm.to_s + ' was last update at ' + synonyms_file.last_modified.to_s
-        next
-      end
-    else
-      puts 'Creating a new synonyms configuration'
-      synonyms = Setting.where(key: 'synonyms').first_or_initialize
-    end
+    #if synonyms
+    #  if .updated_at > synonyms_file.last_modified
+    #    puts sm.to_s + ' is an old file.'
+    #    puts 'Synonyms were last updated at: ' + synonyms.updated_at.to_s
+    #    puts sm.to_s + ' was last update at ' + synonyms_file.last_modified.to_s
+    #   next
+    #  end
+    #else
+    #  puts 'Creating a new synonyms configuration'
+    #  synonyms = Setting.where(key: 'synonyms').first_or_initialize
+    #end
 
     puts 'Uploading New Synonyms'
 
