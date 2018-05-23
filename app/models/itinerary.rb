@@ -14,6 +14,7 @@ class Itinerary < ActiveRecord::Base
     json_i = self.as_json 
     json_i["start_location"] = start_location
     json_i["end_location"] = end_location
+    json_i["request"] = self.request.otp_request
     return json_i
   end
 
