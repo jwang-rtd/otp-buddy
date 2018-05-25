@@ -120,7 +120,7 @@ class OTPService
     'mode_bus':'BUSISH,WALK',
     'mode_walk':'WALK',
     'mode_car':'CAR',
-    'mode_bicycle':'MODE_BICYCLE'}
+    'mode_bicycle':'BICYCLE'}
     hash[trip_type.to_sym]
   end
 
