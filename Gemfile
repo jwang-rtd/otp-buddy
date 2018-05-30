@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-
+ruby '2.3.7'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use SCSS for stylesheets
