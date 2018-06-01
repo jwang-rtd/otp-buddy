@@ -18,5 +18,4 @@ class Itinerary < ActiveRecord::Base
     return json_i
   end
 
-
 end

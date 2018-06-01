@@ -1,0 +1,6 @@
+-itinerary.alerts_array.each do |alerts|
+  -alerts.each do |alert|
+    .row
+      .div{style: "font-weight:bold;"}
+        =alert["alertHeaderText"]
+      =alert["alertDescriptionText"]

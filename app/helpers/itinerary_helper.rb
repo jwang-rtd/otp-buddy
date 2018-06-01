@@ -155,5 +155,14 @@ module ItineraryHelper
     return "#{Setting.host}/assets/modes/#{mode.downcase}.png"
   end
 
+  def alerts_array
+    alerts = [] 
+    self.json_legs.each do |leg|
+      if leg["alerts"]
+        alerts << leg["alerts"]
+      end
+    end
+    return alerts
+  end
 
 end #Module
