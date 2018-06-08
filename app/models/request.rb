@@ -29,6 +29,9 @@ class Request < ActiveRecord::Base
   end
 
   def create_itineraries plan
+
+    return if plan.nil? 
+
     plan['itineraries'].collect do |itinerary_hash|
       itinerary = Itinerary.new
       itinerary.request = self
