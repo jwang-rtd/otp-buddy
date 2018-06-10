@@ -62,7 +62,10 @@ class UserMailer < ApplicationMailer
     @itineraries = itineraries
     @trip_link = trip_link
 
-    #TODO Add static map
+    #Add Attachments
+    attachments.inline['start.png'] = open("#{Setting.host}#{ActionController::Base.helpers.asset_url('start.png')}", 'rb').read
+    attachments.inline['stop.png'] = open("#{Setting.host}#{ActionController::Base.helpers.asset_url('stop.png')}", 'rb').read
+    attach_mode_icons
 
     itineraries.each do |itin|
       attachments.inline[itin.id.to_s + '.png'] = itin.create_static_map
@@ -70,4 +73,21 @@ class UserMailer < ApplicationMailer
 
     mail(to: addresses, subject: subject, from: @@from)
   end
+
+  private
+
+  # Attaches an asset to the email based on its filename (including extension)
+  def attach_mode_icons
+    ["bicycle", "bike", "bus", "cable_car", "car", 
+      "ferry", "funicular", "gondola", "rail", "streetcar", 
+      "subway", "tram", "transit", "walk"].each do |mode|
+      path = ActionController::Base.helpers.asset_path("modes/#{mode}.png").to_s
+      puts mode 
+      puts path
+      puts "#{Setting.host}#{path}"
+      puts '--------------'
+      attachments.inline[mode] = open("#{Setting.host}#{path}", 'rb').read
+    end
+  end
+
 end
