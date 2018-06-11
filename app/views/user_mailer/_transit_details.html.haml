@@ -11,7 +11,7 @@
   - itinerary.json_legs.each do |leg|
     %tr
       %td.itinerary_icons{style: "vertical-align:top; text-align: center;line-height: normal;font-size: 2.25em;padding: 16px 10px;"}
-        =image_tag(attachments[(leg['mode'] || "").downcase].url, height: 26, width: 26, style: 'vertical-align: top;')
+        =image_tag(attachments[("#{leg['mode']}.png" || "").downcase].url, height: 26, width: 26, style: 'vertical-align: top;')
       %td.itin_text_container{style: "padding: 16px 10px;"}
         .itinerary_text{style: "text-align: left;font-family: 'Helvetica Neue', Arial; line-height: 1em; padding-left: 8px; strong {top: 0; position: absolute;}"}
           - if leg['mode'] == "CAR" || leg['mode'] == "BICYCLE" || leg['mode'] == "WALK"

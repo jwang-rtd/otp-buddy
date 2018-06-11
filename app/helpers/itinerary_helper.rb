@@ -165,4 +165,14 @@ module ItineraryHelper
     return alerts
   end
 
+  def mode_array
+    modes = []
+    self.json_legs.each do |leg|
+      if leg["mode"]
+        modes << leg["mode"]
+      end
+    end
+    modes.uniq
+  end
+
 end #Module
