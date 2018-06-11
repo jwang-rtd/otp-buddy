@@ -81,11 +81,7 @@ class UserMailer < ApplicationMailer
     ["bicycle", "bike", "bus", "cable_car", "car", 
       "ferry", "funicular", "gondola", "rail", "streetcar", 
       "subway", "tram", "transit", "walk"].each do |mode|
-      path = ActionController::Base.helpers.asset_path("modes/#{mode}.png").to_s
-      puts mode 
-      puts path
-      puts "#{Setting.host}#{path}"
-      puts '--------------'
+      path = ActionController::Base.helpers.asset_path("#{mode}.png").to_s
       attachments.inline[mode] = open("#{Setting.host}#{path}", 'rb').read
     end
   end
