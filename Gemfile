@@ -44,6 +44,7 @@ gem 'responders', '~> 2.0'
 gem 'rgeo'
 gem 'rgeo-geojson'
 gem 'rgeo-shapefile'
+gem "rgeo-proj4"
 
 #Needed for Geocoder
 gem 'Indirizzo'
