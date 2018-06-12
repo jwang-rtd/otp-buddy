@@ -7,9 +7,19 @@ class Trip < ActiveRecord::Base
   has_many :itineraries, through: :requests
 
   def plan
+    found_walk = false
     requests_array = []
     self.requests.each do |request|
-      requests_array << request.plan
+      unless found_walk and request.trip_type == 'mode_walk' #If we already found a walk itinerary, no need to explicitely ask for one
+        requests_array << request.plan 
+        #Check to see if any of these are walks
+        request.itineraries.each do |itin|
+          if itin[:duration] == itin[:walk_time] and not itin[:duration] == 0 and not itin[:duration].nil?
+            found_walk = true
+          else
+          end
+        end
+      end
     end
     requests_array
   end
