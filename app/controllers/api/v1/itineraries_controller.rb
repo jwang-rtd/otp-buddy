@@ -101,11 +101,10 @@ module Api
       def email
         email_itineraries = params[:email_itineraries]
         trip_link = params[:trip_link].nil? ? nil : params[:trip_link]
-        subject = params[:subjectLine]
 
         email_itineraries.each do |email_itinerary|
           email_addresses = email_itinerary[:email_addresses]
-
+          subject = email_itinerary[:subjectLine]
           ids = email_itinerary[:itineraries].collect { |x| x[:id] }
           itineraries = Itinerary.where(id: ids)
 
