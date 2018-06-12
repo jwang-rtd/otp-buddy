@@ -101,6 +101,7 @@ module Api
       def email
         email_itineraries = params[:email_itineraries]
         trip_link = params[:trip_link].nil? ? nil : params[:trip_link]
+        subject = params[:subjectLine]
 
         email_itineraries.each do |email_itinerary|
           email_addresses = email_itinerary[:email_addresses]
@@ -111,12 +112,12 @@ module Api
           # for subject, get first trip
           trip = itineraries.first.request.trip
 
-          if !email_itinerary[:subject].nil?
-            subject = email_itinerary[:subject]
-          elsif trip.scheduled_time > Time.now
-            subject = "Your Upcoming Ride on " + trip.scheduled_time.strftime('%_m/%e/%Y').gsub(" ","")
-          else
-            subject = "Your Ride on " + trip.scheduled_time.strftime('%_m/%e/%Y').gsub(" ","")
+          if subject.blank?
+            if trip.scheduled_time > Time.now
+              subject = "Your Upcoming Ride on " + trip.scheduled_time.strftime('%_m/%e/%Y').gsub(" ","")
+            else
+              subject = "Your Ride on " + trip.scheduled_time.strftime('%_m/%e/%Y').gsub(" ","")
+            end
           end
 
           UserMailer.user_itinerary_email(email_addresses, itineraries, subject, trip_link=nil).deliver
