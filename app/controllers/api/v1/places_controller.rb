@@ -22,7 +22,7 @@ module Api
 
         # Global POIs
         count = 0
-        landmarks = Landmark.get_by_query_str(search_string, max_results, true)
+        landmarks = Landmark.get_by_query_str(search_string, max_results, false)
         landmarks.each do |landmark|
           locations.append(landmark.build_place_details_hash)
           count += 1
