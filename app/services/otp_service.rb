@@ -116,8 +116,8 @@ class OTPService
     'mode_park_transit':'CAR_PARK,WALK,TRANSIT',
     'mode_car_transit':'CAR,WALK,TRANSIT',
     'mode_bike_park_transit':'BICYCLE_PARK,WALK,TRANSIT',
-    'mode_rail':'TRAINISH,WALK',
-    'mode_bus':'BUSISH,WALK',
+    'mode_rail':'TRAM,RAIL,SUBWAY,FUNICULAR,GONDOLA,WALK',
+    'mode_bus':'BUS,WALK',
     'mode_walk':'WALK',
     'mode_car':'CAR',
     'mode_bicycle':'BICYCLE'}
