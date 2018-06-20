@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       patch 'set_blacklisted_places_file'
       patch 'set_global_boundary'
       patch 'set_host'
+      patch 'set_support_emails'
     end
   end
 
