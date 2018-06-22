@@ -8,6 +8,7 @@ class SettingsController < ApplicationController
     @open_trip_planner = Setting.where(key: 'open_trip_planner').first_or_initialize
     @global_boundary = Setting.where(key: 'global_boundary').first_or_initialize
     @host = Setting.where(key: 'host').first_or_initialize
+    @support_emails = Setting.where(key: 'support_emails').first_or_initialize
   end
 
   def set_callnride_boundary
@@ -108,6 +109,34 @@ class SettingsController < ApplicationController
       setting.save
     else
       error_msgs << "Blacklisted Places URL cannot be blank."
+    end
+
+
+    if error_msgs.size > 0
+      flash[:error] = error_msgs.join(' ')
+    elsif info_msgs.size > 0
+      flash[:success] = info_msgs.join(' ')
+    end
+
+
+    respond_to do |format|
+      format.js
+      format.html {redirect_to settings_path}
+    end
+  end
+
+  def set_support_emails
+    info_msgs = []
+    error_msgs = []
+
+    emails = params[:setting][:value] if params[:setting]
+
+    if !emails.blank?
+      setting = Setting.where(key: 'support_emails').first_or_initialize
+      setting.value = emails
+      setting.save
+    else
+      error_msgs << "Emails cannot be blank."
     end
 
 
