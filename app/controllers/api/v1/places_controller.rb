@@ -22,7 +22,7 @@ module Api
 
         # Global POIs
         count = 0
-        landmarks = Landmark.get_by_query_str(search_string, max_results, false)
+        landmarks = Landmark.get_by_query_str(search_string, max_results, true)
         landmarks.each do |landmark|
           locations.append(landmark.build_place_details_hash)
           count += 1
@@ -44,6 +44,9 @@ module Api
 
       def synonyms
         synonyms = Setting.synonyms
+        synonyms.delete_if do |key, value| 
+          value.split.include? key
+        end
         render status: 200, json: synonyms.as_json
       end
 
@@ -54,6 +57,10 @@ module Api
 
       def within_area
         
+        #TODO REMOVE THIS
+        render json: {result: true}
+        return 
+
         origin = params[:geometry]
         lat = origin[:location][:lat]
         lng = origin[:location][:lng]
