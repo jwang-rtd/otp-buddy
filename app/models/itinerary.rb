@@ -4,6 +4,7 @@ class Itinerary < ActiveRecord::Base
   include ItineraryHelper
 
   serialize :json_legs
+  serialize :fare
 
   belongs_to :request
 
