@@ -44,6 +44,9 @@ module Api
 
       def synonyms
         synonyms = Setting.synonyms
+        synonyms.delete_if do |key, value| 
+          value.split.include? key
+        end
         render status: 200, json: synonyms.as_json
       end
 
@@ -53,7 +56,7 @@ module Api
       end
 
       def within_area
-        
+
         origin = params[:geometry]
         lat = origin[:location][:lat]
         lng = origin[:location][:lng]
