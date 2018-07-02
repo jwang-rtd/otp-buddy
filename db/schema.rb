@@ -11,10 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180504171446) do
+ActiveRecord::Schema.define(version: 20180702153323) do
 
   # These are extensions that must be enabled in order to support this database
-  #enable_extension "plpgsql"
+  enable_extension "plpgsql"
 
   create_table "itineraries", force: :cascade do |t|
     t.integer  "request_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20180504171446) do
     t.datetime "start_time"
     t.datetime "end_time"
     t.integer  "server_status"
+    t.text     "fare"
   end
 
   create_table "landmarks", force: :cascade do |t|
@@ -44,7 +45,7 @@ ActiveRecord::Schema.define(version: 20180504171446) do
     t.string   "landmark_type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.string   "google_place_id"
+    t.text     "google_place_id"
     t.string   "street_number"
     t.string   "route"
     t.string   "stop_code"
@@ -65,7 +66,7 @@ ActiveRecord::Schema.define(version: 20180504171446) do
     t.string   "zip"
     t.string   "raw_address"
     t.string   "name"
-    t.string   "google_place_id"
+    t.text     "google_place_id"
     t.string   "stop_code"
     t.text     "types"
     t.text     "address_components_raw"
