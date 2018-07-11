@@ -97,7 +97,7 @@
         = simple_form_for @support_emails, url: set_support_emails_settings_path, html: {class: 'form-horizontal', multipart: true, method: 'patch' }, authenticity_token: true do |f|
           %div.col-md-10
             %label
-              = "Comma Separated List of Emails"
+              = "Email Address"
             = f.input :value, required:true, label: false, :as => :text, input_html: {style: "width:100%;"}
           %div.col-md-2.text-center
             = f.submit "OK", class: 'btn action-button', role: 'button'
