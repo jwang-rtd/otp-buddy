@@ -24,4 +24,14 @@ class Trip < ActiveRecord::Base
     requests_array
   end
 
+  def errors_hash
+    errors  = {}
+    requests.each do |request|
+      if request.error_text
+        errors[request.trip_type] = request.error_text
+      end
+    end
+    return errors 
+  end
+
 end

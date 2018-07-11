@@ -91,7 +91,11 @@ module Api
         origin_in_callnride, origin_callnride = trip.origin.within_callnride?
         destination_in_callnride, destination_callnride = trip.destination.within_callnride?
 
-        render status: 200, json: {trip_id: trip.id, origin: trip.origin.build_place_details_hash, destination: trip.destination.build_place_details_hash, origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, trip_token: trip.token, itineraries: trip.itineraries.map{ |i| i.serialized }}
+        render status: 200, json: {trip_id: trip.id, origin: trip.origin.build_place_details_hash, destination: trip.destination.build_place_details_hash, 
+          origin_in_callnride: origin_in_callnride, origin_callnride: origin_callnride, 
+          destination_in_callnride: destination_in_callnride, destination_callnride: destination_callnride, 
+          trip_token: trip.token, errors: trip.error_hash, 
+          itineraries: trip.itineraries.map{ |i| i.serialized }}
 
 
         trip.save

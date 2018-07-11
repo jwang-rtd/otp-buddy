@@ -103,4 +103,12 @@ class Request < ActiveRecord::Base
     return trip_times.detect{|hash| hash['tripId'] == trip_id}
   end
 
+  def error_text
+    if otp_response_body and otp_response_body["error"]
+      return otp_response_body["error"]["msg"]
+    else
+      return nil
+    end
+  end
+
 end
