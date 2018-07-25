@@ -111,4 +111,13 @@ class Request < ActiveRecord::Base
     end
   end
 
+  def alerts
+    if otp_response_body and otp_response_body["plan"]
+      return otp_response_body["plan"]["alerts"]
+    else
+      return nil
+    end
+  end
+
+
 end

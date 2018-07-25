@@ -34,4 +34,14 @@ class Trip < ActiveRecord::Base
     return errors 
   end
 
+  def alerts_hash
+    alerts  = {}
+    requests.each do |request|
+      if request.alerts
+        alerts[request.trip_type] = request.alerts
+      end
+    end
+    return alerts
+  end
+
 end
