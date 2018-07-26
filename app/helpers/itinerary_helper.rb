@@ -61,7 +61,7 @@ module ItineraryHelper
     end
 
     if time_in_seconds < 60
-      time_string = TranslationEngine.translate_text(:less_than_one_minute)
+      time_string = "less than 1 minute"
     end
 
     if options[:days_only]
