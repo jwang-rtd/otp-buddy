@@ -10,7 +10,7 @@ class Landmark < ActiveRecord::Base
 
 
   def self.get_by_query_str(query_str, limit, has_address=false)
-    rel = Landmark.arel_table[:name].lower().matches(query_str)
+    rel = Landmark.arel_table[:name].lower().matches(query_str.downcase)
     if has_address
       landmarks = Landmark.has_address.where(rel).limit(limit)
     else
