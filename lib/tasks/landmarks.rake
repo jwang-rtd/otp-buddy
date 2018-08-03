@@ -312,8 +312,11 @@ namespace :landmarks do
 
     og = GeocodingService.new
     geocoded = 0
-
+    geocoding_round = 0 #How many attempts have we made to geocode the ungeocoded points
     stops = tp.get_stops
+
+    puts "Round 0: #{stops.count} Stops left to geocode"
+
     stops.each do |stop|
 
       stop_code = stop['id'].split(':').last  #TODO: The GTFS doesn't have stop_codes, using id for now.
@@ -330,6 +333,9 @@ namespace :landmarks do
                           old: false,
                       })
 
+      puts '-------------------'
+      puts name
+
       if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
         #Reverse Geocode the Lat Lng to fill in the City
         sleep(0.25)
@@ -337,6 +343,8 @@ namespace :landmarks do
         if reverse_geocoded[0] and reverse_geocoded[1].count > 0 #No errors?
           l.city = reverse_geocoded[1].first[:city]
           l.save
+        else
+          puts "Unable to Geocode at this time.  Will re-try geocoding in the next round."
         end
         geocoded += 1
         puts "Geocoding " + geocoded.to_s + " of " + stops.count.to_s
@@ -346,20 +354,42 @@ namespace :landmarks do
 
     end
 
-    #Catch any that didn't geocode due to timeout
-    if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
-      ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
-      ungeocoded.each do |p|
-        #Reverse Geocode the Lat Lng to fill in the City
-        sleep(1)
-        reverse_geocoded = og.reverse_geocode(l.lat, l.lng)
-        if reverse_geocoded[0] and reverse_geocoded[1].count > 0 #No errors?
-          l.city = reverse_geocoded[1].first[:city]
-          l.save
+    # Keep trying to geocode the remaing ones.
+    geocoding_round += 1
+    while(geocoding_round < 10) #Dont' try more than 50 times.
+      geocoded = 0
+      if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
+        # Get all the ungeocoded landmarks
+        ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
+        # If we have geocoded them all, then break out of this loop
+        if ungeocoded.count == 0
+          puts 'All Stops have been geocoded'
+          break
+        else
+          puts "Not all stops have been geocoding.  Retrying . . ."
+          puts "Round #{geocoding_round}: #{ungeocoded.count} Stops left to geocode"
         end
-        geocoded += 1
-        puts "Geocoding " + geocoded.to_s + " of " + stops.count.to_s
+        ungeocoded.each do |p|
+          puts '-------------------'
+          puts p.name
+          
+          #Reverse Geocode the Lat Lng to fill in the City
+          # Increase sleeping time (up to 10 seconds as we keep trying more and more)
+          sleep([geocoding_round,10].min)
+          reverse_geocoded = og.reverse_geocode(p.lat, p.lng)
+          if reverse_geocoded[0] and reverse_geocoded[1].count > 0 #No errors?
+            p.city = reverse_geocoded[1].first[:city]
+            p.save
+          else
+            puts "Unable to Geocode at this time.  Will re-try geocoding in the next round."
+          end
+          geocoded += 1
+          puts "Geocoding " + geocoded.to_s + " of " + ungeocoded.count.to_s
+        end
       end
+
+      geocoding_round +=1 
+
     end
 
     ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
@@ -371,7 +401,15 @@ namespace :landmarks do
       UserMailer.stops_succeeded_email(Setting.support_emails.split(','), ungeocoded).deliver!
     end
 
-    ungeocoded.destroy_all
+    # If there are any remaining ungeocoded places, print them out and then delete 
+
+    if ungeocoded.count > 0
+      puts 'Unable to Geocode the Following:'
+      ungeocoded.all.each do |ug|
+        puts ug.ai 
+      end
+      ungeocoded.destroy_all
+    end
 
   end
 
