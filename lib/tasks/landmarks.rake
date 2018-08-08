@@ -313,7 +313,7 @@ namespace :landmarks do
     og = GeocodingService.new
     geocoded = 0
     geocoding_round = 0 #How many attempts have we made to geocode the ungeocoded points
-    stops = tp.get_stops
+    stops = tp.get_stops[0..500]
 
     puts "Round 0: #{stops.count} Stops left to geocode"
 
@@ -361,8 +361,9 @@ namespace :landmarks do
       if geocoded < Setting.geocoding_limit or Setting.limit_geocoding == false
         # Get all the ungeocoded landmarks
         ungeocoded = Landmark.where(city: nil, landmark_type: 'STOP', old: false)
+        ungeocoded_count = ungeocoded.count
         # If we have geocoded them all, then break out of this loop
-        if ungeocoded.count == 0
+        if ungeocoded_count == 0
           puts 'All Stops have been geocoded'
           break
         else
@@ -384,7 +385,7 @@ namespace :landmarks do
             puts "Unable to Geocode at this time.  Will re-try geocoding in the next round."
           end
           geocoded += 1
-          puts "Geocoding " + geocoded.to_s + " of " + ungeocoded.count.to_s
+          puts "Geocoding " + geocoded.to_s + " of " + ungeocoded_count.to_s
         end
       end
 
