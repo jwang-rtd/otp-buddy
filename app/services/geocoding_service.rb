@@ -31,7 +31,7 @@ class GeocodingService
       results = process_results(res)
       Rails.logger.info "# results after processing: #{results.size}"
     rescue Exception => e
-      Rails.logger.error format_exception(e)
+      Rails.logger.error e
       return false, nil
     end
     return true, results
@@ -44,7 +44,7 @@ class GeocodingService
       res = Geocoder.search(raw_address)
       results = process_results(res)
     rescue Exception => e
-      Rails.logger.error format_exception(e)
+      Rails.logger.error e
       return false, nil
     end
     return true, results
