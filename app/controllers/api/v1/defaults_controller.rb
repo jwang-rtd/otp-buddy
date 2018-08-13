@@ -7,13 +7,13 @@ module Api
       end
 
       def create
-        oc = Setting.where(key: self.code).first_or_initialize
+        oc = Setting.where(key: self.key).first_or_initialize
         oc.value = params["data"].to_json
         oc.save
         render json: {status: 200, message: "Success"}
       end
 
-      def code
+      def key
         (params[:type] == "internal") ? "otp_internal_defaults_json" : "otp_external_defaults_json"
       end
 
