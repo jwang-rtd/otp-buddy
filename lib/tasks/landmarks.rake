@@ -313,7 +313,7 @@ namespace :landmarks do
     og = GeocodingService.new
     geocoded = 0
     geocoding_round = 0 #How many attempts have we made to geocode the ungeocoded points
-    stops = tp.get_stops[0..500]
+    stops = tp.get_stops
 
     puts "Round 0: #{stops.count} Stops left to geocode"
 
