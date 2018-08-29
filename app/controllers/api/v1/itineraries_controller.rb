@@ -99,6 +99,7 @@ module Api
 
 
         trip.save
+
       end #Plan
 
       #Itinerary email template is out of date.

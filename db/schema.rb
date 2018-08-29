@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702154102) do
+ActiveRecord::Schema.define(version: 20180829174321) do
 
   # These are extensions that must be enabled in order to support this database
   #enable_extension "plpgsql"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20180702154102) do
     t.integer  "server_status"
     t.text     "fare"
   end
+
+  add_index "itineraries", ["request_id"], name: "index_itineraries_on_request_id", using: :btree
 
   create_table "landmarks", force: :cascade do |t|
     t.string   "name"
@@ -83,6 +85,8 @@ ActiveRecord::Schema.define(version: 20180702154102) do
     t.string   "trip_type"
   end
 
+  add_index "requests", ["trip_id"], name: "index_requests_on_trip_id", using: :btree
+
   create_table "settings", force: :cascade do |t|
     t.string   "key",        null: false
     t.text     "value"
@@ -111,4 +115,11 @@ ActiveRecord::Schema.define(version: 20180702154102) do
     t.string   "preferred_routes"
   end
 
+  add_index "trips", ["destination_id"], name: "index_trips_on_destination_id", using: :btree
+  add_index "trips", ["origin_id"], name: "index_trips_on_origin_id", using: :btree
+
+  add_foreign_key "itineraries", "requests"
+  add_foreign_key "requests", "trips"
+  add_foreign_key "trips", "places", column: "destination_id"
+  add_foreign_key "trips", "places", column: "origin_id"
 end

@@ -1,27 +1,29 @@
 class Request < ActiveRecord::Base
 
-  serialize :otp_response_body
+  #serialize :otp_response_body
 
   belongs_to :trip
   has_many :itineraries
+  attr_accessor :otp_response, :parsed_body
 
   def plan
     otp_service = OTPService.new
     otp_mode = otp_service.get_otp_mode(self.trip_type)
-    otp_request, otp_response = otp_service.plan([self.trip.origin.lat, self.trip.origin.lng],
+    otp_request, @otp_response = otp_service.plan([self.trip.origin.lat, self.trip.origin.lng],
                                                  [self.trip.destination.lat, self.trip.destination.lng],
                                                  self.trip.scheduled_time, self.trip.arrive_by, otp_mode, wheelchair=false,
                                                  self.trip.walk_mph, self.trip.max_walk_miles, self.trip.max_bike_miles, self.trip.optimize,
                                                  self.trip.num_itineraries, self.trip.min_transfer_seconds, self.trip.max_transfer_seconds,
                                                  self.trip.banned_routes,self.trip.preferred_routes)
     self.otp_request = otp_request
-    self.otp_response_code = otp_response.code
-    self.otp_response_message = otp_response.message
+    self.otp_response_code = @otp_response.code
+    self.otp_response_message = @otp_response.message
     self.save
 
-    if otp_response.code == "200"
-      body = otp_response.body
-      self.otp_response_body = JSON.parse(body)
+    if @otp_response.code == "200"
+      body = @otp_response.body
+      #self.otp_response_body = JSON.parse(body)
+      @parsed_body = JSON.parse(body)
       self.save
       create_itineraries JSON.parse(body).to_hash['plan']
     end
@@ -96,24 +98,24 @@ class Request < ActiveRecord::Base
 
   #Get the list of stops for this trip with realtime info
   def get_trip_time trip_id
-    if self.otp_response_body.nil? or self.otp_response_body['tripTimes'].nil?
+    if @parsed_body.nil? or @parsed_body['tripTimes'].nil?
       return nil
     end
-    trip_times = self.otp_response_body['tripTimes']
+    trip_times = @parsed_body['tripTimes']
     return trip_times.detect{|hash| hash['tripId'] == trip_id}
   end
 
   def error_text
-    if otp_response_body and otp_response_body["error"]
-      return otp_response_body["error"]["msg"]
+    if @parsed_body and @parsed_body["error"]
+      return @parsed_body["error"]["msg"]
     else
       return nil
     end
   end
 
   def alerts
-    if otp_response_body and otp_response_body["plan"]
-      return otp_response_body["plan"]["alerts"]
+    if @parsed_body and @parsed_body["plan"]
+      return @parsed_body["plan"]["alerts"]
     else
       return nil
     end

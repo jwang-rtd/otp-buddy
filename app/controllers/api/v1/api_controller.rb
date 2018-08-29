@@ -20,6 +20,12 @@ module Api
         end
       end
 
+      def measure(message, &block)
+        start = Time.now
+        block.call 
+        puts "#{message}: #{Time.now - start}"
+      end
+
     end
   end
 end
