@@ -6,7 +6,7 @@ class OTPService
   def plan(from,
       to, trip_datetime, arriveBy=true, mode="TRANSIT,WALK", wheelchair="false", walk_speed=3.0,
       max_walk_distance=2, max_bicycle_distance=5, optimize='QUICK', num_itineraries=3,
-      min_transfer_time=nil, max_transfer_time=nil, banned_routes=nil, preferred_routes=nil)
+      min_transfer_time=nil, max_transfer_time=nil, banned_routes=nil, preferred_routes=nil, trip_shown_range_time=nil)
 
     #walk_speed is defined in MPH and converted to m/s before going to OTP
     #max_walk_distance is defined in miles and converted to meters before going to OTP
@@ -51,6 +51,10 @@ class OTPService
     end
 
     url_options += "&numItineraries=" + num_itineraries.to_s
+
+    unless trip_shown_range_time.nil?
+      url_options += "&trip_shown_range_time=" + trip_shown_range_time.to_s
+    end
 
     #Unless the optimiziton = QUICK (which is the default), set additional parameters
     case optimize.downcase
