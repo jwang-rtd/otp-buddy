@@ -6,6 +6,8 @@ class Trip < ActiveRecord::Base
   has_many :requests
   has_many :itineraries, through: :requests
 
+  attr_accessor :trip_shown_range_time
+
   def plan
     found_walk = false
     requests_array = []
@@ -43,5 +45,4 @@ class Trip < ActiveRecord::Base
     end
     return alerts
   end
-
 end

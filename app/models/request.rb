@@ -14,7 +14,7 @@ class Request < ActiveRecord::Base
                                                  self.trip.scheduled_time, self.trip.arrive_by, otp_mode, wheelchair=false,
                                                  self.trip.walk_mph, self.trip.max_walk_miles, self.trip.max_bike_miles, self.trip.optimize,
                                                  self.trip.num_itineraries, self.trip.min_transfer_seconds, self.trip.max_transfer_seconds,
-                                                 self.trip.banned_routes,self.trip.preferred_routes)
+                                                 self.trip.banned_routes,self.trip.preferred_routes,self.trip.trip_shown_range_time)
     self.otp_request = otp_request
     self.otp_response_code = @otp_response.code
     self.otp_response_message = @otp_response.message

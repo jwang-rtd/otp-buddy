@@ -15,6 +15,7 @@ module Api
         walk_mph = params[:walk_mph] || 3.0
         min_transfer_time = params[:min_transfer_time_hard]
         max_transfer_time = params[:max_transfer_time]
+        trip_shown_range_time = params[:trip_shown_range_time]
         banned_routes = params[:banned_routes]
         preferred_routes = params[:preferred_routes]
 
@@ -32,6 +33,9 @@ module Api
         trip.num_itineraries = (params[:num_itineraries] || 3).to_i
         trip.min_transfer_seconds = min_transfer_time.nil? ? nil : min_transfer_time.to_i
         trip.max_transfer_seconds = max_transfer_time.nil? ? nil : max_transfer_time.to_i
+        # TODO Derek is it worth adding this to the database? RTD isn't currently logging it.
+        #trip.trip_shown_range_time = trip_shown_range_time.nil? ? nil : trip_shown_range_time.to_i
+        trip.trip_shown_range_time = trip_shown_range_time.nil? ? nil : trip_shown_range_time.to_i
         trip.source_tag = source_tag
 
 
