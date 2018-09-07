@@ -35,7 +35,7 @@ module Api
         trip.max_transfer_seconds = max_transfer_time.nil? ? nil : max_transfer_time.to_i
         # TODO Derek is it worth adding this to the database? RTD isn't currently logging it.
         #trip.trip_shown_range_time = trip_shown_range_time.nil? ? nil : trip_shown_range_time.to_i
-        trip.set_trip_shown_range_time = trip_shown_range_time.nil? ? nil : trip_shown_range_time.to_i
+        trip.trip_shown_range_time = trip_shown_range_time.nil? ? nil : trip_shown_range_time.to_i
         trip.source_tag = source_tag
 
 
