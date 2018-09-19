@@ -107,6 +107,14 @@ class OTPService
     return JSON.parse(resp.body).first
   end
 
+  def get_all_feed_ids
+    path = '/index/feeds'
+    url = Setting.open_trip_planner + path
+    resp = Net::HTTP.get_response(URI.parse(url))
+    return JSON.parse(resp.body)
+  end
+
+
   def get_stoptimes trip_id, agency_id=1
     path = '/index/trips/' + agency_id.to_s + ':' + trip_id.to_s + '/stoptimes'
     url = Setting.open_trip_planner + path
