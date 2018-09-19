@@ -53,7 +53,7 @@ class OTPService
     url_options += "&numItineraries=" + num_itineraries.to_s
 
     unless trip_shown_range_time.nil?
-      url_options += "&trip_shown_range_time=" + trip_shown_range_time.to_s
+      url_options += "&tripShownRangeTime=" + trip_shown_range_time.to_s
     end
 
     #Unless the optimiziton = QUICK (which is the default), set additional parameters
