@@ -33,6 +33,7 @@ namespace :landmarks do
     Landmark.where(landmark_type: 'POI').update_all(old: true)
     line = 2 #Line 1 is the header, start with line 2 in the count
     gs = GeocodingService.new
+    station_types = Setting.station_types
 
     CSV.foreach(landmarks_file, {:col_sep => ",", :headers => true}) do |row|
       begin
@@ -52,6 +53,11 @@ namespace :landmarks do
                               zip: row[4],
                               old: false,
                           })
+
+          if row[8].to_s.strip.in? station_types
+            l.types = ['station']
+            l.save!
+          end
 
           begin
             google_maps_geocode(l, gs) unless google_place_geocode(l)
