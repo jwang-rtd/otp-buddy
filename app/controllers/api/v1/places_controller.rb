@@ -9,16 +9,31 @@ module Api
         max_results = (params[:max_results] || 5).to_i
 
         locations = []
+        
+        ##########
+        # Stops
+        ##########
 
         #Check for exact match on stop code
         #Cut out white space and remove wildcards
         stripped_string = search_string.tr('%', '').strip.to_s + '%'
         if stripped_string.length >= 4 #Only check once 3 numbers have been entered
-          stops = Landmark.stops.where('stop_code LIKE ?', stripped_string).limit(max_results)
-          stops.each do |stop|
-            locations.append(stop.build_place_details_hash)
-          end
+          locations = Landmark.stops.where('stop_code LIKE ?', stripped_string).limit(max_results)
         end
+
+        #Check for Stop Names
+        stripped_string = search_string.tr('%', '').strip.to_s
+        locations += Landmark.get_stops_by_intersection_str(stripped_string, max_results)
+
+        locations.uniq! 
+        locations.map!{ |stop| stop.build_place_details_hash}
+
+        ########### End Stops
+
+
+        ##########
+        # POIs
+        ##########
 
         # Global POIs
         count = 0
@@ -32,7 +47,9 @@ module Api
 
         end
 
-        hash = {places_search_results: {locations: locations}, record_count: locations.count}
+        ########### End POIs
+
+        hash = {places_search_results: {locations: locations.uniq}, record_count: locations.count}
         respond_with hash
 
       end
