@@ -9,7 +9,7 @@ class Place < ActiveRecord::Base
     {
         address_components: self.address_components_raw,
 
-        formatted_address: self.address,
+        formatted_address: self.address || self.raw_address,
         place_id: self.google_place_id,
         geometry: {
             location: {
