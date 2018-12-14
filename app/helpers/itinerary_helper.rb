@@ -116,12 +116,18 @@ module ItineraryHelper
       when 'CAR'
         return "Drive to " + leg['to']['name']
       when 'TRAM', 'SUBWAY', 'RAIL', 'BUS', 'FERRY', 'CABLE_CAR', 'GONDOLA', 'FUNICULAR'
+        if(leg['mode'] == 'TRAM')
+          mode = 'Train'
+        else
+          mode = leg['mode'].humanize
+        end
         agency = leg['agencyName']
         route_name = leg['routeShortName'] || leg['routeLongName']
+
         if leg['headsign']
-          return [agency, leg['route'], leg['mode'].humanize, leg['headsign'], 'to', leg['to']['name']].join(' ')
+          return [agency, leg['route'], mode, leg['headsign'], 'to', leg['to']['name']].join(' ')
         else
-          return [agency, leg['route'], leg['mode'].humanize, 'to', leg['to']['name']].join(' ')
+          return [agency, leg['route'], mode, 'to', leg['to']['name']].join(' ')
         end
 
       else

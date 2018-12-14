@@ -4,6 +4,10 @@ module Api
 
       def plan
 
+        # TODO find out why waypoints in arrive by trips are emailing the second segment then the first.
+        # Some insight be found by seeing Judy's changes to the old 1 Click system
+        # https://github.com/rideRTD/otp-trip-manager/blob/master/app/controllers/itineraries_controller.rb
+
         #Unpack params
         modes = params['modes'] || ['mode_transit']
         trip_parts = params[:itinerary_request]
