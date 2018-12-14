@@ -116,8 +116,8 @@ module Api
         email_itineraries.each do |email_itinerary|
           email_addresses = email_itinerary[:email_addresses]
           subject = email_itinerary[:subjectLine]
-          ids = email_itinerary[:itineraries].collect { |x| x[:id] }
-           
+          ids = email_itinerary[:itineraries].collect { |x| x[:id].to_i }
+
           #get the itineraries and ensures that they are retuned in the same order they were requested
           itineraries = Itinerary.find(ids).index_by(&:id).values_at(*ids)
 
